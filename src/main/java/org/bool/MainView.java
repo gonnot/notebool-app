@@ -9,13 +9,16 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import org.bool.engine.NoteBook;
 
 @Route("")
 @StyleSheet("styles/bool.css")
-public class MainView extends HorizontalLayout {
+public class MainView extends HorizontalLayout implements HasUrlParameter<String> {
     private static final String CLICKED_CSS_CLASS = "clicked";
+    private String fileName = "essai-save-2.txt";
     private NoteBook notebook;
     private final VerticalLayout notebookContainer;
 
@@ -43,11 +46,11 @@ public class MainView extends HorizontalLayout {
     }
 
     private void save() {
-        notebook.save("essai-save-2.txt");
+        notebook.save(fileName);
     }
 
     private void load() {
-        initNotebook(NoteBook.load("essai-save-2.txt"));
+        initNotebook(NoteBook.load(fileName));
     }
 
     private void initNotebook(NoteBook newNotebook) {
@@ -67,5 +70,11 @@ public class MainView extends HorizontalLayout {
         notebook.forEach(block -> block.addClickListener(clicked));
 
         notebook.forEach(block -> notebookContainer.add(block.getComponent()));
+    }
+
+    @Override
+    public void setParameter(BeforeEvent event, String parameter) {
+        fileName = parameter;
+        load();
     }
 }

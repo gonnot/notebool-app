@@ -61,7 +61,7 @@ public class NoteBook {
                     .map(contentStartingWithBlockClass -> {
                         try {
                             int endIndex = contentStartingWithBlockClass.indexOf('\n');
-                            String className = contentStartingWithBlockClass.substring(0, endIndex);
+                            String className = contentStartingWithBlockClass.substring(0, endIndex).trim();
                             String blockContent = contentStartingWithBlockClass.substring(endIndex, contentStartingWithBlockClass.length()).trim();
 
                             //noinspection unchecked
