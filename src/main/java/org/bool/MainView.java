@@ -21,7 +21,7 @@ import java.util.Objects;
 @StyleSheet("styles/bool.css")
 public class MainView extends HorizontalLayout implements HasUrlParameter<String> {
     private static final String CLICKED_CSS_CLASS = "clicked";
-    private String fileName = "essai-save-2.txt";
+    private String fileName = "essai-save.txt";
     private NoteBook notebook;
     private final VerticalLayout notebookContainer;
 
@@ -36,23 +36,23 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         notebookContainer.add(createTopToolbar());
         this.add(notebookContainer);
 
-        initNotebook(NoteBook.load("template.txt"));
+        loadNotebook();
     }
 
     private HorizontalLayout createTopToolbar() {
         HorizontalLayout topToolbar = new HorizontalLayout(
                 new Image("jupiler-logo.png", "logo"),
-                new Button("Save", VaadinIcon.WALLET.create(), event -> save()),
-                new Button("Load", VaadinIcon.DOWNLOAD.create(), event -> load()));
+                new Button("Save", VaadinIcon.DOWNLOAD.create(), event -> saveNotebook()),
+                new Button("Load", VaadinIcon.WALLET.create(), event -> loadNotebook()));
         topToolbar.addClassName("notebook-header");
         return topToolbar;
     }
 
-    private void save() {
+    private void saveNotebook() {
         notebook.save(fileName);
     }
 
-    private void load() {
+    private void loadNotebook() {
         initNotebook(NoteBook.load(fileName));
     }
 
@@ -63,21 +63,22 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
 
         this.notebook = newNotebook;
 
-        ComponentEventListener<ClickEvent<?>> clicked = new ComponentEventListener<>() {
-            @Override
-            public void onComponentEvent(ClickEvent event) {
-                notebook.forEach(block -> block.removeClassName(CLICKED_CSS_CLASS));
-                ((HasStyle) event.getSource()).addClassName(CLICKED_CSS_CLASS);
-            }
+        ComponentEventListener<ClickEvent<?>> clicked = (ComponentEventListener<ClickEvent<?>>) event -> {
+            notebook.forEach(block -> block.getComponent().removeClassName(CLICKED_CSS_CLASS));
+            ((HasStyle) event.getSource()).addClassName(CLICKED_CSS_CLASS);
         };
-        notebook.forEach(block -> block.addClickListener(clicked));
+
+        notebook.forEach(block -> {
+            //noinspection unchecked
+            block.getComponent().addClickListener(clicked);
+        });
 
         notebook.forEach(block -> notebookContainer.add(block.getComponent()));
     }
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        fileName = Objects.requireNonNullElse(parameter, "essai-save-2.txt");
-        load();
+        fileName = Objects.requireNonNullElse(parameter, "essai-save.txt");
+        loadNotebook();
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public class RunSession {
     private final JShell jShell;
 
-    public RunSession() {
+    RunSession() {
         this.jShell = JShell.builder()
                 .out(System.out)
                 .err(System.err)

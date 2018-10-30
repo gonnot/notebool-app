@@ -18,14 +18,8 @@ public class NoteBook {
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 
-    public NoteBook() {
+    private NoteBook() {
         this.runSession = new RunSession();
-    }
-
-
-    public NoteBook(Block... blocks) {
-        this.runSession = new RunSession();
-        Stream.of(blocks).forEach(this::add);
     }
 
     public void forEach(Consumer<? super Block> action) {
@@ -89,7 +83,7 @@ public class NoteBook {
         return !content.isEmpty();
     }
 
-    void add(Block block) {
+    private void add(Block block) {
         if (block == null) return;
         content.add(block);
         block.init(runSession);
@@ -98,31 +92,4 @@ public class NoteBook {
     private static String separator(String separatorName) {
         return SEPARATOR_STRING + separatorName + "\n";
     }
-
-/*
-
-    private static StringBuilder extract(List<Block> notebook, String line, StringBuilder builder) {
-        if (line.startsWith(SEPARATOR_STRING)) {
-            if (builder.length() > 0) {
-                if (currentLine != null && currentLine.contains("org.bool.block.MarkDownBlock")) {
-                    notebook.add(new MarkDownBlock(builder.toString()));
-                } else if (currentLine != null && currentLine.contains("org.bool.block.RunCodeBlock")) {
-                    JShell jShell = JShell.builder()
-                            .out(System.out)
-                            .err(System.err)
-                            .build();
-                    RunCodeBlock runCodeBlock = new RunCodeBlock();
-                    notebook.add(runCodeBlock);
-                }
-                builder = new StringBuilder();
-            } else {
-                builder = new StringBuilder();
-            }
-            currentLine = line;
-        } else {
-            builder.append(line);
-        }
-        return builder;
-    }
-*/
 }
