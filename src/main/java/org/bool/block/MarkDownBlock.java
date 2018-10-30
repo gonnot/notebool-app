@@ -36,8 +36,6 @@ public class MarkDownBlock extends Div implements Block {
                                 MarkDownBlock.this.remove(textField);
                                 MarkDownBlock.this.setText(MarkDownBlock.this.markdownText);
                                 getUI().ifPresent(MarkDownBlock.this::convertMarkDownToHtml);
-                            } else {
-                                System.out.println("keyPressEvent = " + keyPressEvent);
                             }
                         }
                     });
