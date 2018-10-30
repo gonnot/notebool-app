@@ -11,8 +11,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import org.bool.engine.NoteBook;
+
+import java.util.Objects;
 
 @Route("")
 @StyleSheet("styles/bool.css")
@@ -73,8 +76,8 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     @Override
-    public void setParameter(BeforeEvent event, String parameter) {
-        fileName = parameter;
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        fileName = Objects.requireNonNullElse(parameter, "essai-save-2.txt");
         load();
     }
 }
