@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.bool.engine.Block;
+import org.bool.util.KeyboardShortcut;
 
 // Math Rendering    : https://github.com/Khan/KaTeX
 // Code Highlighting : https://highlightjs.org/
@@ -34,7 +35,7 @@ public class MarkDownBlock extends Div implements Block {
         textField.setValueChangeMode(ValueChangeMode.EAGER);
 
         textField.addKeyPressListener((ComponentEventListener<KeyPressEvent>)keyPressEvent -> {
-            if (keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n")) {
+            if (KeyboardShortcut.isControlEnter(keyPressEvent)) {
                 stopEditingMode(textField);
             }
         });

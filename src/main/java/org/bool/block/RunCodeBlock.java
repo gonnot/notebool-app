@@ -1,6 +1,5 @@
 package org.bool.block;
 
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
@@ -9,6 +8,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.bool.engine.Block;
 import org.bool.engine.RunSession;
+import org.bool.util.KeyboardShortcut;
 
 @Tag("bool-code")
 public class RunCodeBlock extends Div implements Block {
@@ -26,7 +26,7 @@ public class RunCodeBlock extends Div implements Block {
         button.addClickListener(event -> evaluate(scriptText.getValue(), outputText));
 
         scriptText.addKeyPressListener(keyPressEvent -> {
-            if (keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n")) {
+            if (KeyboardShortcut.isControlEnter(keyPressEvent)) {
                 evaluate(scriptText.getValue(), outputText);
             }
         });
