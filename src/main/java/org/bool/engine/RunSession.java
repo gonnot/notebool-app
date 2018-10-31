@@ -10,9 +10,9 @@ public class RunSession {
 
     RunSession() {
         this.jShell = JShell.builder()
-                .out(System.out)
-                .err(System.err)
-                .build();
+                            .out(System.out)
+                            .err(System.err)
+                            .build();
     }
 
     public String evaluate(String script) {

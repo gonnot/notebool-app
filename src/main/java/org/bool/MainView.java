@@ -63,9 +63,9 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
 
         this.notebook = newNotebook;
 
-        ComponentEventListener<ClickEvent<?>> clicked = (ComponentEventListener<ClickEvent<?>>) event -> {
+        ComponentEventListener<ClickEvent<?>> clicked = (ComponentEventListener<ClickEvent<?>>)event -> {
             notebook.forEach(block -> block.getComponent().removeClassName(CLICKED_CSS_CLASS));
-            ((HasStyle) event.getSource()).addClassName(CLICKED_CSS_CLASS);
+            ((HasStyle)event.getSource()).addClassName(CLICKED_CSS_CLASS);
         };
 
         notebook.forEach(block -> {

@@ -1,8 +1,6 @@
 package org.bool.block;
 
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.KeyPressEvent;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
@@ -27,12 +25,9 @@ public class RunCodeBlock extends Div implements Block {
         button.getElement().setAttribute("theme", "tertiary");
         button.addClickListener(event -> evaluate(scriptText.getValue(), outputText));
 
-        scriptText.addKeyPressListener(new ComponentEventListener<KeyPressEvent>() {
-            @Override
-            public void onComponentEvent(KeyPressEvent keyPressEvent) {
-                if (keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n")) {
-                    evaluate(scriptText.getValue(), outputText);
-                }
+        scriptText.addKeyPressListener(keyPressEvent -> {
+            if (keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n")) {
+                evaluate(scriptText.getValue(), outputText);
             }
         });
 
@@ -52,7 +47,8 @@ public class RunCodeBlock extends Div implements Block {
     private void evaluate(String script, Div outputText) {
         if (runSession != null) {
             outputText.setText(runSession.evaluate(script));
-        } else {
+        }
+        else {
             outputText.setText("Initialisation issue");
         }
     }

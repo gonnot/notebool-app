@@ -16,4 +16,6 @@ puts markdown.to_html
 1+1 + 3
 ################################################org.bool.block.MarkDownBlock
 Thanks for using Jupiler
+################################################org.bool.block.RunCodeBlock
+2+1 + 3
 ################################################END

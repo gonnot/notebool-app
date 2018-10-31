@@ -6,8 +6,9 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.bool.engine.Block;
-//
-// Math Rendering : https://github.com/Khan/KaTeX
+
+// Math Rendering    : https://github.com/Khan/KaTeX
+// Code Highlighting : https://highlightjs.org/
 @Tag("bool-markdown")
 @JavaScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.7/dist/showdown.min.js")
 public class MarkDownBlock extends Div implements Block {
@@ -17,56 +18,52 @@ public class MarkDownBlock extends Div implements Block {
     public MarkDownBlock(String markdownText) {
         this.markdownText = markdownText;
         setText(markdownText);
-        addClickListener(new ComponentEventListener<ClickEvent<MarkDownBlock>>() {
-            @Override
-            public void onComponentEvent(ClickEvent clickEvent) {
-                if (!isEditing && clickEvent.getClickCount() >= 2) {
-                    isEditing = true;
-                    setText(null);
-                    TextArea textField = new TextArea();
-
-                    textField.setValueChangeMode(ValueChangeMode.EAGER);
-
-                    textField.addKeyPressListener(new ComponentEventListener<KeyPressEvent>() {
-                        @Override
-                        public void onComponentEvent(KeyPressEvent keyPressEvent) {
-                            if (keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n")) {
-                                isEditing = false;
-                                MarkDownBlock.this.markdownText = textField.getValue();
-                                MarkDownBlock.this.remove(textField);
-                                MarkDownBlock.this.setText(MarkDownBlock.this.markdownText);
-                                getUI().ifPresent(MarkDownBlock.this::convertMarkDownToHtml);
-                            }
-                        }
-                    });
-
-                    textField.setValue(MarkDownBlock.this.markdownText);
-
-                    add(textField);
-                }
+        //noinspection unchecked
+        addClickListener((ComponentEventListener<ClickEvent<Component>>)clickEvent -> {
+            if (!isEditing && clickEvent.getClickCount() >= 2) {
+                startEditingMode();
             }
         });
+    }
+
+    private void startEditingMode() {
+        isEditing = true;
+        setText(null);
+        TextArea textField = new TextArea();
+        textField.setValue(MarkDownBlock.this.markdownText);
+        textField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        textField.addKeyPressListener((ComponentEventListener<KeyPressEvent>)keyPressEvent -> {
+            if (keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n")) {
+                stopEditingMode(textField);
+            }
+        });
+
+        add(textField);
+    }
+
+    private void stopEditingMode(TextArea textField) {
+        isEditing = false;
+        MarkDownBlock.this.markdownText = textField.getValue();
+        MarkDownBlock.this.remove(textField);
+        MarkDownBlock.this.setText(MarkDownBlock.this.markdownText);
+        getUI().ifPresent(MarkDownBlock.this::convertMarkDownToHtml);
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         //language=JavaScript
         convertMarkDownToHtml(attachEvent
-                .getUI());
+                                      .getUI());
 
     }
 
     private void convertMarkDownToHtml(UI ui) {
-        String expression = "" +
-                "var converter = new showdown.Converter()," +
-                "    text      = $0.innerHTML;" +
-                "    $0.innerHTML = converter.makeHtml(text);";
+        String expression = "const converter = new showdown.Converter()," +
+                            "    text      = $0.innerHTML;" +
+                            "    $0.innerHTML = converter.makeHtml(text);";
 
-        ui.getPage()
-                .executeJavaScript(
-                        expression,
-                        getElement()
-                );
+        ui.getPage().executeJavaScript(expression, getElement());
     }
 
     @Override
