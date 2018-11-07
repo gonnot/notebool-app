@@ -97,4 +97,12 @@ public class NoteBook {
     private static String separator(String separatorName) {
         return SEPARATOR_STRING + separatorName + "\n";
     }
+
+    public Object nextOf(Block block) {
+        return null;
+    }
+
+    public Block select(Object o) {
+        return null;
+    }
 }

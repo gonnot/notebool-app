@@ -1,0 +1,39 @@
+################################################org.bool.block.MarkDownBlock
+# JUnit 5
+
+## Overview
+JUnit is one of the most popular unit testing frameworks for Java, so it is a big deal in the developer community
+ when new major versions come out. An alpha version of JUnit 5 was released in early February, and it contains a
+ number of exciting innovations.
+
+This article will explore the new features of this release, and the main differences with previous versions.
+
+## Dependencies and Setup
+
+Installing JUnit 5 is pretty straightforward. Just add the following dependency to your pom.xml:
+
+```md
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-engine</artifactId>
+    <version>5.1.0</version>
+    <scope>test</scope>
+</dependency>
+```
+
+It is important to note that this version *requires Java 8 to work*.
+
+When creating a test, make sure you import org.junit.jupiter.api.Test, not org.junit.Test. Also, the test
+methods no longer need to be public; package local will do.
+
+
+################################################org.bool.block.RunCodeBlock
+@Test
+void lambdaExpressions() {
+    assertTrue(Stream.of(1, 2, 3)
+      .stream()
+      .mapToInt(i -> i)
+      .sum() > 5, () -> "Sum should be greater than 5");
+}
+
+################################################END

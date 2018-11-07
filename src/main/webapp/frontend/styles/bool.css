@@ -4,6 +4,10 @@ bool-markdown, bool-code {
     border-left: 5px solid white;
 }
 
+bool-markdown:focus, bool-code:focus {
+    background-color: lemonchiffon;
+}
+
 bool-code vaadin-text-area, bool-markdown vaadin-text-area {
     width: calc(100% - 5px);
 }

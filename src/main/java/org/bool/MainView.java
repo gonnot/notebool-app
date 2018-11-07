@@ -1,18 +1,18 @@
 package org.bool;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
+import org.bool.engine.Block;
 import org.bool.engine.NoteBook;
 
 import java.util.Objects;
@@ -73,7 +73,19 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
             block.getComponent().addClickListener(clicked);
         });
 
-        notebook.forEach(block -> notebookContainer.add(block.getComponent()));
+        notebook.forEach(block -> {
+            Component component = block.getComponent();
+            component.getElement().setAttribute("tabindex", "0");
+            ComponentUtil.addListener(component,
+                                      KeyDownEvent.class,
+                                      event -> {
+                                          Block nextBlock = notebook.select(notebook.nextOf(block));
+                                          block.getComponent().removeClassName(CLICKED_CSS_CLASS);
+                                          Notification.show("Gogog");
+                                      });
+
+            notebookContainer.add(component);
+        });
     }
 
     @Override
