@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
@@ -79,9 +78,18 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
             ComponentUtil.addListener(component,
                                       KeyDownEvent.class,
                                       event -> {
-                                          Block nextBlock = notebook.select(notebook.nextOf(block));
-                                          block.getComponent().removeClassName(CLICKED_CSS_CLASS);
-                                          Notification.show("Gogog");
+                                          Block nextBlock = null;
+                                          if (event.getKey().getKeys().contains("ArrowDown")) {
+                                              nextBlock = notebook.nextOf(block);
+                                          }
+                                          if (event.getKey().getKeys().contains("ArrowUp")) {
+                                              nextBlock = notebook.previousOf(block);
+                                          }
+
+                                          if (nextBlock != null) {
+                                              notebook.forEach(block1 -> block1.getComponent().removeClassName(CLICKED_CSS_CLASS));
+                                              nextBlock.getComponent().addClassName(CLICKED_CSS_CLASS);
+                                          }
                                       });
 
             notebookContainer.add(component);

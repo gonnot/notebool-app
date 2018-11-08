@@ -98,11 +98,23 @@ public class NoteBook {
         return SEPARATOR_STRING + separatorName + "\n";
     }
 
-    public Object nextOf(Block block) {
-        return null;
+    public Block nextOf(Block block) {
+        int indexOf = content.indexOf(block);
+        if (indexOf == content.size() - 1) {
+            indexOf = 0;
+        }
+        else {
+            indexOf++;
+        }
+        return content.get(indexOf);
     }
 
-    public Block select(Object o) {
-        return null;
+    public Block previousOf(Block block) {
+        int indexOf = content.indexOf(block);
+        if (indexOf != 0) {
+            indexOf--;
+        }
+        return content.get(indexOf);
     }
+
 }
