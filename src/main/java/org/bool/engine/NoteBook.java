@@ -1,6 +1,7 @@
 package org.bool.engine;
 
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.dom.ElementFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -86,7 +87,7 @@ public class NoteBook {
         return !content.isEmpty();
     }
 
-    private void add(Block block) {
+    public void add(Block block) {
         if (block == null) {
             return;
         }
@@ -113,6 +114,9 @@ public class NoteBook {
         int indexOf = content.indexOf(block);
         if (indexOf != 0) {
             indexOf--;
+        }
+        else {
+            indexOf=content.size()-1;
         }
         return content.get(indexOf);
     }
