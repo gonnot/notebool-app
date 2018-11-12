@@ -9,6 +9,7 @@ public class KeyboardShortcut {
         return keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n");
     }
 
+
     public static boolean isArrowUp(KeyDownEvent event) {
         return event.getKey().getKeys().contains("ArrowUp");
     }

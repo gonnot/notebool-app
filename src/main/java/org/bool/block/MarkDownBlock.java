@@ -13,42 +13,18 @@ import org.bool.util.KeyboardShortcut;
 @Tag("bool-markdown")
 @JavaScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.7/dist/showdown.min.js")
 public class MarkDownBlock extends Div implements Block {
+    private final InternalEditionMode editionMode = new InternalEditionMode();
     private String markdownText;
-    private boolean isEditing = false;
 
     public MarkDownBlock(String markdownText) {
         this.markdownText = markdownText;
         setText(markdownText);
         //noinspection unchecked
         addClickListener((ComponentEventListener<ClickEvent<Component>>)clickEvent -> {
-            if (!isEditing && clickEvent.getClickCount() >= 2) {
-                startEditingMode();
+            if (!getEditionMode().isEditing() && clickEvent.getClickCount() >= 2) {
+                getEditionMode().start();
             }
         });
-    }
-
-    private void startEditingMode() {
-        isEditing = true;
-        setText(null);
-        TextArea textField = new TextArea();
-        textField.setValue(MarkDownBlock.this.markdownText);
-        textField.setValueChangeMode(ValueChangeMode.EAGER);
-
-        textField.addKeyPressListener((ComponentEventListener<KeyPressEvent>)keyPressEvent -> {
-            if (KeyboardShortcut.isControlEnter(keyPressEvent)) {
-                stopEditingMode(textField);
-            }
-        });
-
-        add(textField);
-    }
-
-    private void stopEditingMode(TextArea textField) {
-        isEditing = false;
-        MarkDownBlock.this.markdownText = textField.getValue();
-        MarkDownBlock.this.remove(textField);
-        MarkDownBlock.this.setText(MarkDownBlock.this.markdownText);
-        getUI().ifPresent(MarkDownBlock.this::convertMarkDownToHtml);
     }
 
     @Override
@@ -68,7 +44,48 @@ public class MarkDownBlock extends Div implements Block {
     }
 
     @Override
+    public EditionMode getEditionMode() {
+        return editionMode;
+    }
+
+    @Override
     public String getContent() {
         return markdownText;
+    }
+
+    private class InternalEditionMode implements EditionMode {
+        private boolean isEditing = false;
+        private TextArea textField;
+
+        @Override
+        public void start() {
+            this.isEditing = true;
+            setText(null);
+            textField = new TextArea();
+            textField.setValue(MarkDownBlock.this.markdownText);
+            textField.setValueChangeMode(ValueChangeMode.EAGER);
+
+            textField.addKeyPressListener(keyPressEvent -> {
+                if (KeyboardShortcut.isControlEnter(keyPressEvent)) {
+                    stop();
+                }
+            });
+
+            add(textField);
+        }
+
+        @Override
+        public void stop() {
+            this.isEditing = false;
+            MarkDownBlock.this.markdownText = textField.getValue();
+            MarkDownBlock.this.remove(textField);
+            MarkDownBlock.this.setText(MarkDownBlock.this.markdownText);
+            getUI().ifPresent(MarkDownBlock.this::convertMarkDownToHtml);
+        }
+
+        @Override
+        public boolean isEditing() {
+            return this.isEditing;
+        }
     }
 }

@@ -1,3 +1,31 @@
+/*
+ | Header
+*/
+.notebook-container {
+    max-width: 900px;
+    background-color: white;
+    overflow: hidden;
+}
+
+.notebook-header {
+    border-bottom: 1px dashed lightgray;
+}
+
+.notebook-header img {
+    height: 45px;
+}
+
+/*
+ | Root
+*/
+
+.root-container {
+    background-color: lightgray;
+}
+
+/*
+ | Blocks
+*/
 bool-markdown, bool-code {
     padding-left: 100px;
     border: 1px solid white;
@@ -12,45 +40,8 @@ bool-code vaadin-text-area, bool-markdown vaadin-text-area {
     width: calc(100% - 5px);
 }
 
-bool-code {
-    position: relative;
-}
-
-bool-code vaadin-button {
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-bool-code div {
-    color: darkgray;
-    font-family: monospace;
-    white-space: pre;
-}
-
-bool-code.clicked vaadin-button {
-    visibility: visible;
-}
-
 .clicked {
     border-color: lightgray;
     border-left-color: dodgerblue;
 }
 
-.root-container {
-    background-color: lightgray;
-}
-
-.notebook-container {
-    max-width: 900px;
-    background-color: white;
-    overflow: hidden;
-}
-
-.notebook-header {
-    border-bottom: 1px dashed lightgray;
-}
-.notebook-header img {
-    height: 45px;
-}

@@ -1,0 +1,45 @@
+<custom-style>
+    <style>
+        bool-code {
+            position: relative;
+        }
+
+        bool-code vaadin-button {
+            visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        bool-code.clicked vaadin-button {
+            visibility: visible;
+        }
+
+        bool-code div {
+            color: darkgray;
+            font-family: monospace;
+            white-space: pre;
+        }
+/*
+        bool-code vaadin-text-area {
+            --bool-code-block-background : red;
+        }
+        bool-code.editing vaadin-text-area {
+            --bool-code-block-background : white;
+        }
+*/
+    </style>
+
+    <dom-module id="my-code-block-style" theme-for="vaadin-text-area">
+        <template>
+            <style>
+                :host-context(bool-code.editing) [part="input-field"] {
+                    background-color: red;
+                }
+                :host-context(bool-code) [part="input-field"] {
+                    background-color: white;
+                }
+            </style>
+        </template>
+    </dom-module>
+</custom-style>

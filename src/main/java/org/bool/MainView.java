@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -95,6 +96,11 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
                                   KeyDownEvent.class,
                                   event -> {
                                       Block nextBlock = null;
+                                      if (block.getEditionMode().isEditing()) {
+                                          System.out.println("Block is in editing mode - do not handle arrow");
+                                          return;
+                                      }
+                                      System.out.println("Block - change focus " + block.getEditionMode().isEditing());
                                       if (KeyboardShortcut.isArrowDown(event)) {
                                           nextBlock = notebook.nextOf(block);
                                       }
