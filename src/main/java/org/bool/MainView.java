@@ -7,7 +7,6 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -33,9 +32,15 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         this.setSizeFull();
         this.addClassName("root-container");
 
-        clicked = (ComponentEventListener<ClickEvent<?>>)event -> {
-            notebook.forEach(block -> block.getComponent().removeClassName(CLICKED_CSS_CLASS));
-            ((HasStyle)event.getSource()).addClassName(CLICKED_CSS_CLASS);
+        clicked = event -> {
+            Component clickedComponent = event.getSource();
+            notebook.forEach(block -> {
+                if (block.getComponent() != clickedComponent) {
+                    block.getEditionMode().stop();
+                }
+                block.getComponent().removeClassName(CLICKED_CSS_CLASS);
+            });
+            ((HasStyle)clickedComponent).addClassName(CLICKED_CSS_CLASS);
         };
 
         notebookContainer = new VerticalLayout();

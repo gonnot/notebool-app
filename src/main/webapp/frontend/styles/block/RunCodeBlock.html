@@ -20,24 +20,14 @@
             font-family: monospace;
             white-space: pre;
         }
-/*
-        bool-code vaadin-text-area {
-            --bool-code-block-background : red;
-        }
-        bool-code.editing vaadin-text-area {
-            --bool-code-block-background : white;
-        }
-*/
     </style>
 
     <dom-module id="my-code-block-style" theme-for="vaadin-text-area">
         <template>
             <style>
                 :host-context(bool-code.editing) [part="input-field"] {
-                    background-color: red;
-                }
-                :host-context(bool-code) [part="input-field"] {
                     background-color: white;
+                    border: 1px solid lightgreen;
                 }
             </style>
         </template>

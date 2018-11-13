@@ -76,6 +76,9 @@ public class MarkDownBlock extends Div implements Block {
 
         @Override
         public void stop() {
+            if (!isEditing) {
+                return;
+            }
             this.isEditing = false;
             MarkDownBlock.this.markdownText = textField.getValue();
             MarkDownBlock.this.remove(textField);
