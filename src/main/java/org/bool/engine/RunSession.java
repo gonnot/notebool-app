@@ -13,6 +13,7 @@ public class RunSession {
                             .out(System.out)
                             .err(System.err)
                             .build();
+        jShell.addToClasspath("D:\\cache\\maven\\repository\\joda-time\\joda-time\\2.9.4\\joda-time-2.9.4.jar");
     }
 
     public String evaluate(String script) {
