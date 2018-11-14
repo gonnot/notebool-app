@@ -36,7 +36,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
             Component clickedComponent = event.getSource();
             notebook.forEach(block -> {
                 if (block.getComponent() != clickedComponent) {
-                    block.getEditionMode().stop();
+                    block.getEditionService().stop();
                 }
                 block.getComponent().removeClassName(CLICKED_CSS_CLASS);
             });
@@ -101,11 +101,11 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
                                   KeyDownEvent.class,
                                   event -> {
                                       Block nextBlock = null;
-                                      if (block.getEditionMode().isEditing()) {
+                                      if (block.getEditionService().isEditing()) {
                                           System.out.println("Block is in editing mode - do not handle arrow");
                                           return;
                                       }
-                                      System.out.println("Block - change focus " + block.getEditionMode().isEditing());
+                                      System.out.println("Block - change focus " + block.getEditionService().isEditing());
                                       if (KeyboardShortcut.isArrowDown(event)) {
                                           nextBlock = notebook.nextOf(block);
                                       }

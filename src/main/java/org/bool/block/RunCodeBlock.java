@@ -1,6 +1,9 @@
 package org.bool.block;
 
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
@@ -15,7 +18,7 @@ import org.bool.util.KeyboardShortcut;
 @HtmlImport("styles/block/RunCodeBlock.html")
 public class RunCodeBlock extends Div implements Block {
     private final TextArea codeText;
-    private final InternalEditionMode internalEditionMode = new InternalEditionMode();
+    private final InternalEditionService internalEditionMode = new InternalEditionService();
     private RunSession runSession;
 
     public RunCodeBlock() {
@@ -29,12 +32,12 @@ public class RunCodeBlock extends Div implements Block {
         button.addClickListener(event -> evaluate(codeText.getValue(), outputText));
 
         //noinspection unchecked
-        ComponentUtil.addListener(codeText, ClickEvent.class, (ComponentEventListener)event -> getEditionMode().start());
+        ComponentUtil.addListener(codeText, ClickEvent.class, (ComponentEventListener)event -> getEditionService().start());
 
         codeText.addKeyPressListener(keyPressEvent -> {
             if (KeyboardShortcut.isControlEnter(keyPressEvent)) {
                 evaluate(codeText.getValue(), outputText);
-                getEditionMode().stop();
+                getEditionService().stop();
             }
         });
 
@@ -44,11 +47,6 @@ public class RunCodeBlock extends Div implements Block {
     public RunCodeBlock(String text) {
         this();
         this.codeText.setValue(text);
-    }
-
-    @Override
-    public void init(RunSession runSession) {
-        this.runSession = runSession;
     }
 
     private void evaluate(String script, Div outputText) {
@@ -61,21 +59,31 @@ public class RunCodeBlock extends Div implements Block {
     }
 
     @Override
-    public EditionMode getEditionMode() {
+    public EditionService getEditionService() {
         return internalEditionMode;
     }
 
     @Override
-    public String getContent() {
-        return codeText.getValue();
+    public PersistenceService getPersistenceService() {
+        return new PersistenceService() {
+            @Override
+            public String getContent() {
+                return codeText.getValue();
+            }
+
+            @Override
+            public void init(RunSession runSession) {
+                RunCodeBlock.this.runSession = runSession;
+            }
+        };
     }
 
-    private class InternalEditionMode implements EditionMode {
+    private class InternalEditionService implements EditionService {
         private boolean isEditing;
 
         @Override
         public void start() {
-            System.out.println("InternalEditionMode.start");
+            System.out.println("RunCodeBlock.start");
             addClassName(EDITING_CSS_CLASS_NAME);
             codeText.addClassName(EDITING_CSS_CLASS_NAME);
             isEditing = true;
@@ -83,7 +91,7 @@ public class RunCodeBlock extends Div implements Block {
 
         @Override
         public void stop() {
-            System.out.println("InternalEditionMode.stop");
+            System.out.println("RunCodeBlock.stop");
             removeClassName(EDITING_CSS_CLASS_NAME);
             codeText.removeClassName(EDITING_CSS_CLASS_NAME);
             isEditing = false;

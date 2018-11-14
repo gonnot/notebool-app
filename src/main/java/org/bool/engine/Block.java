@@ -5,17 +5,17 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 
 public interface Block {
-    public static final String EDITING_CSS_CLASS_NAME = "editing";
+    String EDITING_CSS_CLASS_NAME = "editing";
 
     default <T extends Component & HasStyle & ClickNotifier> T getComponent() {
         //noinspection unchecked
         return (T)this;
     }
 
-    // ---- Edition Mode
-    EditionMode getEditionMode();
+    // ---- Edition Service
+    EditionService getEditionService();
 
-    interface EditionMode {
+    interface EditionService {
         void start();
 
         void stop();
@@ -23,9 +23,12 @@ public interface Block {
         boolean isEditing();
     }
 
-    // ---- Save / Load
-    String getContent();
+    // ---- Init / Persistence Service
+    PersistenceService getPersistenceService();
 
-    default void init(RunSession runSession) {
+    interface PersistenceService {
+        String getContent();
+
+        void init(RunSession runSession);
     }
 }

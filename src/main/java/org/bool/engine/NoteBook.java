@@ -1,7 +1,6 @@
 package org.bool.engine;
 
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.dom.ElementFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class NoteBook {
         try (FileWriter fileWriter = new FileWriter("D:\\project\\sideprojects\\notebool-app\\" + fileName)) {
             Optional<String> result = content.stream()
                                              .map(block -> separator(block.getClass().getName())
-                                                           + block.getContent())
+                                                           + block.getPersistenceService().getContent())
                                              .reduce((first, second) -> first + "\n" + second);
             if (result.isPresent()) {
                 fileWriter.write(result.get());
@@ -92,7 +91,7 @@ public class NoteBook {
             return;
         }
         content.add(block);
-        block.init(runSession);
+        block.getPersistenceService().init(runSession);
     }
 
     private static String separator(String separatorName) {
@@ -116,7 +115,7 @@ public class NoteBook {
             indexOf--;
         }
         else {
-            indexOf=content.size()-1;
+            indexOf = content.size() - 1;
         }
         return content.get(indexOf);
     }

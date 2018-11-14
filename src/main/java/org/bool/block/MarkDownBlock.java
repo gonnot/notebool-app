@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.bool.engine.Block;
+import org.bool.engine.RunSession;
 import org.bool.util.KeyboardShortcut;
 
 // Math Rendering    : https://github.com/Khan/KaTeX
@@ -13,7 +14,7 @@ import org.bool.util.KeyboardShortcut;
 @Tag("bool-markdown")
 @JavaScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.7/dist/showdown.min.js")
 public class MarkDownBlock extends Div implements Block {
-    private final InternalEditionMode editionMode = new InternalEditionMode();
+    private final InternalEditionService editionMode = new InternalEditionService();
     private String markdownText;
 
     public MarkDownBlock(String markdownText) {
@@ -21,8 +22,8 @@ public class MarkDownBlock extends Div implements Block {
         setText(markdownText);
         //noinspection unchecked
         addClickListener((ComponentEventListener<ClickEvent<Component>>)clickEvent -> {
-            if (!getEditionMode().isEditing() && clickEvent.getClickCount() >= 2) {
-                getEditionMode().start();
+            if (!getEditionService().isEditing() && clickEvent.getClickCount() >= 2) {
+                getEditionService().start();
             }
         });
     }
@@ -44,16 +45,25 @@ public class MarkDownBlock extends Div implements Block {
     }
 
     @Override
-    public EditionMode getEditionMode() {
+    public EditionService getEditionService() {
         return editionMode;
     }
 
     @Override
-    public String getContent() {
-        return markdownText;
+    public PersistenceService getPersistenceService() {
+        return new PersistenceService() {
+            @Override
+            public String getContent() {
+                return markdownText;
+            }
+
+            @Override
+            public void init(RunSession runSession) {
+            }
+        };
     }
 
-    private class InternalEditionMode implements EditionMode {
+    private class InternalEditionService implements EditionService {
         private boolean isEditing = false;
         private TextArea textField;
 
