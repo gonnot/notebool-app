@@ -76,7 +76,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     private void loadNotebook() {
-        initNotebook(NoteBook.load(fileName));
+        initNotebook(NoteBook.loadFromStore(fileName));
     }
 
     private void initNotebook(NoteBook newNotebook) {

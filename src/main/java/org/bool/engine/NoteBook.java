@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class NoteBook {
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 
-    private NoteBook() {
+    NoteBook() {
         this.runSession = new RunSession();
     }
 
@@ -44,9 +45,13 @@ public class NoteBook {
         }
     }
 
-    public static NoteBook load(final String fileName) {
+    public static NoteBook loadFromStore(final String fileName) {
+        return load(Paths.get("D:\\project\\sideprojects\\notebool-app\\" + fileName));
+    }
+
+    static NoteBook load(Path notebookFilePath) {
         try {
-            String content = new String(Files.readAllBytes(Paths.get("D:\\project\\sideprojects\\notebool-app\\" + fileName)));
+            String content = new String(Files.readAllBytes(notebookFilePath));
             String[] split = content.split(SEPARATOR_STRING);
             NoteBook noteBook = new NoteBook();
             Stream.of(split)
