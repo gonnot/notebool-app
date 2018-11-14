@@ -9,9 +9,11 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NoteBookTest {
     @Nested
@@ -30,24 +32,37 @@ class NoteBookTest {
     @ExtendWith(TempDirectory.class)
     class Persistence {
         @Test
-        @DisplayName("Can load a notebook")
-        void canLoadANotebook(@TempDirectory.TempDir Path tempDir) throws IOException {
-            Path filePath = saveFile(tempDir,
-                                     "################################################" + DummyBlock.class.getName() + "\n" +
-                                     "Some Text\n" +
-                                     "\n" +
-                                     "################################################END\n");
+        @DisplayName("Can load a notebook with one single block")
+        void canLoadANotebookWithOneSingleBlock(@TempDirectory.TempDir Path tempDir) throws IOException {
+            Path filePath = createdFile(tempDir,
+                                        new DummyBlock("dummy block content"));
 
             NoteBook noteBook = NoteBook.load(filePath);
 
-            assertTrue(noteBook.isNotEmpty());
+            StringBuilder builder = new StringBuilder();
+            noteBook.forEach(block -> blockToString(builder, block));
+            assertThat(builder.toString())
+                    .isEqualTo("DummyBlock(dummy block content)");
         }
 
-        private Path saveFile(@TempDirectory.TempDir Path tempDir, String content) throws IOException {
+        private Path createdFile(Path tempDir, Block... blocks) throws IOException {
+            String content =
+                    Stream.of(blocks)
+                          .map(block -> NoteBook.SEPARATOR_STRING + block.getClass().getName() + "\n" +
+                                        block.getPersistenceService().getContent() + "\n")
+                          .collect(Collectors.joining("", "", NoteBook.SEPARATOR_STRING + "END"));
+
             Path filePath = tempDir.resolve("my-file.txt");
             Files.write(filePath,
                         content.getBytes());
             return filePath;
         }
+    }
+
+    private static StringBuilder blockToString(StringBuilder builder, Block block) {
+        return builder.append(block.getClass().getSimpleName())
+                      .append("(")
+                      .append(block.getPersistenceService().getContent())
+                      .append(")");
     }
 }

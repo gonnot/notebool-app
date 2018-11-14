@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class NoteBook {
-    private static final String SEPARATOR_STRING = "################################################";
+    static final String SEPARATOR_STRING = "################################################";
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 
