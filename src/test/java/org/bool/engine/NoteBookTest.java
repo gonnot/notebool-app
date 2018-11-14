@@ -23,8 +23,62 @@ class NoteBookTest {
 
         @Test
         @DisplayName("Empty notebook")
-        void EmptyNotebook() {
+        void emptyNotebook() {
             assertFalse(noteBook.isNotEmpty());
+        }
+    }
+
+    @Nested
+    @DisplayName("Block cycles")
+    class BlockCycles {
+        private final NoteBook noteBook = new NoteBook();
+        private final DummyBlock first = new DummyBlock("First Block");
+        private final DummyBlock second = new DummyBlock("Second Block");
+
+        @Test
+        @DisplayName("Next block is the same")
+        void nextBlockIsTheSame() {
+            noteBook.add(first);
+            assertThat(noteBook.nextOf(first)).isSameAs(first);
+        }
+
+        @Test
+        @DisplayName("Next block")
+        void nextBlock() {
+            noteBook.add(first);
+            noteBook.add(second);
+            assertThat(noteBook.nextOf(first)).isSameAs(second);
+        }
+
+        @Test
+        @DisplayName("Next block of last block is first")
+        void nextBlockOfLastBlockIsFirst() {
+            noteBook.add(first);
+            noteBook.add(second);
+            assertThat(noteBook.nextOf(second)).isSameAs(first);
+        }
+
+        @Test
+        @DisplayName("Previous block is the same")
+        void previousBlockIsTheSame() {
+            noteBook.add(first);
+            assertThat(noteBook.previousOf(first)).isSameAs(first);
+        }
+
+        @Test
+        @DisplayName("Previous block")
+        void previousBlock() {
+            noteBook.add(first);
+            noteBook.add(second);
+            assertThat(noteBook.previousOf(second)).isSameAs(first);
+        }
+
+        @Test
+        @DisplayName("Previous block of first block is last")
+        void previousBlockOfFirstBlockIsLast() {
+            noteBook.add(first);
+            noteBook.add(second);
+            assertThat(noteBook.previousOf(first)).isSameAs(second);
         }
     }
 
@@ -39,10 +93,29 @@ class NoteBookTest {
 
             NoteBook noteBook = NoteBook.load(filePath);
 
+            assertContent(noteBook,
+                          "DummyBlock(dummy block content)");
+        }
+
+        @Test
+        @DisplayName("Can load a notebook previously saved")
+        void canLoadANotebookPreviouslySaved(@TempDirectory.TempDir Path tempDir) {
+            NoteBook previousNoteBook = new NoteBook();
+            previousNoteBook.add(new DummyBlock("block content"));
+            Path filePath = tempDir.resolve("notebook.jupiler");
+            previousNoteBook.save(filePath);
+
+            NoteBook noteBook = NoteBook.load(filePath);
+
+            assertContent(noteBook,
+                          "DummyBlock(block content)");
+        }
+
+        private void assertContent(NoteBook noteBook, String notebookExpectedContent) {
             StringBuilder builder = new StringBuilder();
             noteBook.forEach(block -> blockToString(builder, block));
             assertThat(builder.toString())
-                    .isEqualTo("DummyBlock(dummy block content)");
+                    .isEqualTo(notebookExpectedContent);
         }
 
         private Path createdFile(Path tempDir, Block... blocks) throws IOException {

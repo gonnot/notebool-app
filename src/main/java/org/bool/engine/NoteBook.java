@@ -2,6 +2,7 @@ package org.bool.engine;
 
 import com.vaadin.flow.component.notification.Notification;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 
 public class NoteBook {
     static final String SEPARATOR_STRING = "################################################";
+    private static final String STORE_PATH = "D:\\project\\sideprojects\\notebool-app\\";
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 
@@ -27,8 +29,12 @@ public class NoteBook {
         content.forEach(action);
     }
 
-    public void save(final String fileName) {
-        try (FileWriter fileWriter = new FileWriter("D:\\project\\sideprojects\\notebool-app\\" + fileName)) {
+    public void saveInStore(final String fileName) {
+        save(new File(STORE_PATH + fileName).toPath());
+    }
+
+    void save(Path filePath) {
+        try (FileWriter fileWriter = new FileWriter(filePath.toFile())) {
             Optional<String> result = content.stream()
                                              .map(block -> separator(block.getClass().getName())
                                                            + block.getPersistenceService().getContent())
@@ -46,7 +52,7 @@ public class NoteBook {
     }
 
     public static NoteBook loadFromStore(final String fileName) {
-        return load(Paths.get("D:\\project\\sideprojects\\notebool-app\\" + fileName));
+        return load(Paths.get(STORE_PATH + fileName));
     }
 
     static NoteBook load(Path notebookFilePath) {

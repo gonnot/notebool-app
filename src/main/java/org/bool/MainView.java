@@ -72,7 +72,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     private void saveNotebook() {
-        notebook.save(fileName);
+        notebook.saveInStore(fileName);
     }
 
     private void loadNotebook() {
