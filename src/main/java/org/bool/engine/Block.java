@@ -6,6 +6,7 @@ import com.vaadin.flow.component.HasStyle;
 
 public interface Block {
     String EDITING_CSS_CLASS_NAME = "editing";
+    static final String CLICKED_CSS_CLASS = "clicked";
 
     default <T extends Component & HasStyle & ClickNotifier> T getComponent() {
         //noinspection unchecked

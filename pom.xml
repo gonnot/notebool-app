@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <failOnMissingWebXml>false</failOnMissingWebXml>
 
-        <vaadin.version>11.0.0</vaadin.version>
+        <vaadin.version>11.0.1</vaadin.version>
     </properties>
 
     <repositories>
@@ -88,6 +88,32 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
+<!--
+        <dependency>
+            <groupId>com.bisam</groupId>
+            <artifactId>vaadin-uispec</artifactId>
+            <version>18.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bisam</groupId>
+            <artifactId>vaadin-utils</artifactId>
+            <version>18.2-SNAPSHOT</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>temporary</groupId>
+            <artifactId>vaadin-uispec</artifactId>
+            <version>unused</version>
+            <systemPath>${project.basedir}\lib\vaadin-uispec-20181114.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>temporary</groupId>
+            <artifactId>vaadin-utils</artifactId>
+            <version>unused</version>
+            <systemPath>${project.basedir}\lib\vaadin-utils-20181114.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -99,6 +125,12 @@
                 <version>9.4.11.v20180605</version>
                 <configuration>
                     <scanIntervalSeconds>1</scanIntervalSeconds>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-da -Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
         </plugins>

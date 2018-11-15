@@ -21,7 +21,7 @@ public class NoteBook {
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 
-    NoteBook() {
+    public NoteBook() {
         this.runSession = new RunSession();
     }
 
@@ -131,4 +131,10 @@ public class NoteBook {
         return content.get(indexOf);
     }
 
+    public Block getFirstBlock() {
+        if (content.isEmpty()) {
+            return null;
+        }
+        return content.get(0);
+    }
 }

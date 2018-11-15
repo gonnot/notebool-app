@@ -18,10 +18,12 @@ import org.bool.util.KeyboardShortcut;
 
 import java.util.Objects;
 
+import static org.bool.engine.Block.CLICKED_CSS_CLASS;
+
 @Route("")
 @StyleSheet("styles/bool.css")
 public class MainView extends HorizontalLayout implements HasUrlParameter<String> {
-    private static final String CLICKED_CSS_CLASS = "clicked";
+
     private String fileName = "essai-save.txt";
     private NoteBook notebook;
     private final VerticalLayout notebookContainer;
@@ -76,10 +78,10 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     private void loadNotebook() {
-        initNotebook(NoteBook.loadFromStore(fileName));
+        displayNotebook(NoteBook.loadFromStore(fileName));
     }
 
-    private void initNotebook(NoteBook newNotebook) {
+    void displayNotebook(NoteBook newNotebook) {
         if (this.notebook != null && this.notebook.isNotEmpty()) {
             this.notebook.forEach(block -> notebookContainer.remove(block.getComponent()));
         }
@@ -92,6 +94,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         });
 
         notebook.forEach(this::addContainer);
+        selectBlock(notebook, notebook.getFirstBlock());
     }
 
     private void addContainer(Block block) {
@@ -114,13 +117,19 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
                                       }
 
                                       if (nextBlock != null) {
-                                          notebook.forEach(block1 -> block1.getComponent().removeClassName(CLICKED_CSS_CLASS));
-                                          nextBlock.getComponent().addClassName(CLICKED_CSS_CLASS);
-                                          nextBlock.getComponent().getElement().callFunction("focus");
+                                          selectBlock(notebook, nextBlock);
                                       }
                                   });
 
         notebookContainer.add(component);
+    }
+
+    private static void selectBlock(NoteBook notebook, Block blockToSelect) {
+        notebook.forEach(block -> block.getComponent().removeClassName(CLICKED_CSS_CLASS));
+        if (blockToSelect != null) {
+            blockToSelect.getComponent().addClassName(CLICKED_CSS_CLASS);
+            blockToSelect.getComponent().getElement().callFunction("focus");
+        }
     }
 
     @Override

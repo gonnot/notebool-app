@@ -1,8 +1,9 @@
 package org.bool.engine;
 
+import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.textfield.TextArea;
 
-public class DummyBlock extends TextArea implements Block {
+public class DummyBlock extends TextArea implements Block, ClickNotifier {
     public DummyBlock(String value) {
         setValue(value);
     }
