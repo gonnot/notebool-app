@@ -4,26 +4,15 @@ import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.textfield.TextArea;
 
 public class DummyBlock extends TextArea implements Block, ClickNotifier {
+    private final InternalEditionService internalEditionService = new InternalEditionService();
+
     public DummyBlock(String value) {
         setValue(value);
     }
 
     @Override
     public EditionService getEditionService() {
-        return new EditionService() {
-            @Override
-            public void start() {
-            }
-
-            @Override
-            public void stop() {
-            }
-
-            @Override
-            public boolean isEditing() {
-                return false;
-            }
-        };
+        return internalEditionService;
     }
 
     @Override
@@ -36,8 +25,26 @@ public class DummyBlock extends TextArea implements Block, ClickNotifier {
 
             @Override
             public void init(RunSession runSession) {
-
             }
         };
+    }
+
+    private static class InternalEditionService implements EditionService {
+        private boolean isEditing = false;
+
+        @Override
+        public void start() {
+            isEditing = true;
+        }
+
+        @Override
+        public void stop() {
+            isEditing = false;
+        }
+
+        @Override
+        public boolean isEditing() {
+            return isEditing;
+        }
     }
 }

@@ -25,6 +25,11 @@ public class NoteBook {
         this.runSession = new RunSession();
     }
 
+    public NoteBook(Block... blocks) {
+        this();
+        Stream.of(blocks).forEach(this::add);
+    }
+
     public void forEach(Consumer<? super Block> action) {
         content.forEach(action);
     }

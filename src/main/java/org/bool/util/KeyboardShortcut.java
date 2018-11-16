@@ -9,12 +9,15 @@ public class KeyboardShortcut {
         return keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n");
     }
 
-
     public static boolean isArrowUp(KeyDownEvent event) {
         return event.getKey().getKeys().contains("ArrowUp");
     }
 
     public static boolean isArrowDown(KeyDownEvent event) {
         return event.getKey().getKeys().contains("ArrowDown");
+    }
+
+    public static boolean isEnter(KeyDownEvent event) {
+        return event.getKey().getKeys().contains("Enter");
     }
 }

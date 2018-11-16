@@ -29,6 +29,9 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     private final VerticalLayout notebookContainer;
     private final ComponentEventListener<ClickEvent<?>> clicked;
 
+    /**
+     * @noinspection WeakerAccess
+     */
     public MainView() {
         this.setJustifyContentMode(JustifyContentMode.CENTER);
         this.setSizeFull();
@@ -100,28 +103,26 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     private void addContainer(Block block) {
         Component component = block.getComponent();
         component.getElement().setAttribute("tabindex", "0");
-        ComponentUtil.addListener(component,
-                                  KeyDownEvent.class,
-                                  event -> {
-                                      Block nextBlock = null;
-                                      if (block.getEditionService().isEditing()) {
-                                          System.out.println("Block is in editing mode - do not handle arrow");
-                                          return;
-                                      }
-                                      System.out.println("Block - change focus " + block.getEditionService().isEditing());
-                                      if (KeyboardShortcut.isArrowDown(event)) {
-                                          nextBlock = notebook.nextOf(block);
-                                      }
-                                      else if (KeyboardShortcut.isArrowUp(event)) {
-                                          nextBlock = notebook.previousOf(block);
-                                      }
-
-                                      if (nextBlock != null) {
-                                          selectBlock(notebook, nextBlock);
-                                      }
-                                  });
+        ComponentUtil.addListener(component, KeyDownEvent.class, event -> handleKeyStrokeOnBlock(block, event));
 
         notebookContainer.add(component);
+    }
+
+    private void handleKeyStrokeOnBlock(Block block, KeyDownEvent event) {
+        if (block.getEditionService().isEditing()) {
+            System.out.println("Block is in editing mode - do not handle arrow");
+            return;
+        }
+
+        if (KeyboardShortcut.isArrowDown(event)) {
+            selectBlock(notebook, notebook.nextOf(block));
+        }
+        else if (KeyboardShortcut.isArrowUp(event)) {
+            selectBlock(notebook, notebook.previousOf(block));
+        }
+        else if (KeyboardShortcut.isEnter(event)) {
+            block.getEditionService().start();
+        }
     }
 
     private static void selectBlock(NoteBook notebook, Block blockToSelect) {
