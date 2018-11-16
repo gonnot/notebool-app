@@ -7,6 +7,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.bool.engine.Block;
 import org.bool.engine.RunSession;
+import org.bool.util.Focus;
 import org.bool.util.KeyboardShortcut;
 
 // Math Rendering    : https://github.com/Khan/KaTeX
@@ -82,6 +83,7 @@ public class MarkDownBlock extends Div implements Block {
             });
 
             add(textField);
+            Focus.requestFocus(textField);
         }
 
         @Override
@@ -94,6 +96,7 @@ public class MarkDownBlock extends Div implements Block {
             MarkDownBlock.this.remove(textField);
             MarkDownBlock.this.setText(MarkDownBlock.this.markdownText);
             getUI().ifPresent(MarkDownBlock.this::convertMarkDownToHtml);
+            Focus.requestFocus(getComponent());
         }
 
         @Override

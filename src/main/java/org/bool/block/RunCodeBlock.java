@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.bool.engine.Block;
 import org.bool.engine.RunSession;
+import org.bool.util.Focus;
 import org.bool.util.KeyboardShortcut;
 
 @Tag("bool-code")
@@ -87,6 +88,7 @@ public class RunCodeBlock extends Div implements Block {
             addClassName(EDITING_CSS_CLASS_NAME);
             codeText.addClassName(EDITING_CSS_CLASS_NAME);
             isEditing = true;
+            Focus.requestFocus(codeText);
         }
 
         @Override
@@ -95,6 +97,7 @@ public class RunCodeBlock extends Div implements Block {
             removeClassName(EDITING_CSS_CLASS_NAME);
             codeText.removeClassName(EDITING_CSS_CLASS_NAME);
             isEditing = false;
+            Focus.requestFocus(getComponent());
         }
 
         @Override

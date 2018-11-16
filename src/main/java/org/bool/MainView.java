@@ -14,6 +14,7 @@ import com.vaadin.flow.router.Route;
 import org.bool.block.MarkDownBlock;
 import org.bool.engine.Block;
 import org.bool.engine.NoteBook;
+import org.bool.util.Focus;
 import org.bool.util.KeyboardShortcut;
 
 import java.util.Objects;
@@ -129,7 +130,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         notebook.forEach(block -> block.getComponent().removeClassName(CLICKED_CSS_CLASS));
         if (blockToSelect != null) {
             blockToSelect.getComponent().addClassName(CLICKED_CSS_CLASS);
-            blockToSelect.getComponent().getElement().callFunction("focus");
+            Focus.requestFocus(blockToSelect.getComponent());
         }
     }
 
