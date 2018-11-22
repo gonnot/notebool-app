@@ -1,6 +1,7 @@
 package org.bool.engine;
 
 import com.vaadin.flow.component.notification.Notification;
+import org.bool.block.MarkDownBlock;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -31,7 +33,18 @@ public class NoteBook {
     }
 
     public void forEach(Consumer<? super Block> action) {
-        content.forEach(action);
+        blocks().forEach(action);
+    }
+
+    public Stream<Block> blocks() {
+        return content.stream();
+    }
+
+    public void forEachIndexed(BiConsumer<Integer, ? super Block> action) {
+        for (int i = 0; i < content.size(); i++) {
+            Block block = content.get(i);
+            action.accept(i, block);
+        }
     }
 
     public void saveInStore(final String fileName) {
@@ -73,7 +86,7 @@ public class NoteBook {
                       try {
                           int endIndex = contentStartingWithBlockClass.indexOf('\n');
                           String className = contentStartingWithBlockClass.substring(0, endIndex).trim();
-                          String blockContent = contentStartingWithBlockClass.substring(endIndex, contentStartingWithBlockClass.length()).trim();
+                          String blockContent = contentStartingWithBlockClass.substring(endIndex).trim();
 
                           //noinspection unchecked
                           Class<? extends Block> blockClass = (Class<? extends Block>)Class.forName(className);
@@ -141,5 +154,9 @@ public class NoteBook {
             return null;
         }
         return content.get(0);
+    }
+
+    public Integer indexOf(MarkDownBlock block) {
+        return content.indexOf(block);
     }
 }

@@ -1,6 +1,8 @@
 package org.bool;
 
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.KeyDownEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
@@ -28,7 +30,6 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     private String fileName = "essai-save.txt";
     private NoteBook notebook;
     private final VerticalLayout notebookContainer;
-    private final ComponentEventListener<ClickEvent<?>> clicked;
 
     /**
      * @noinspection WeakerAccess
@@ -38,24 +39,11 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         this.setSizeFull();
         this.addClassName("root-container");
 
-        clicked = event -> {
-            Component clickedComponent = event.getSource();
-            notebook.forEach(block -> {
-                if (block.getComponent() != clickedComponent) {
-                    block.getEditionService().stop();
-                }
-                block.getComponent().removeClassName(CLICKED_CSS_CLASS);
-            });
-            ((HasStyle)clickedComponent).addClassName(CLICKED_CSS_CLASS);
-        };
-
         notebookContainer = new VerticalLayout();
         notebookContainer.setDefaultHorizontalComponentAlignment(Alignment.STRETCH);
         notebookContainer.addClassName("notebook-container");
         notebookContainer.add(createTopToolbar());
         this.add(notebookContainer);
-
-        loadNotebook();
     }
 
     private HorizontalLayout createTopToolbar() {
@@ -71,10 +59,10 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     private void addBlock() {
         MarkDownBlock block = new MarkDownBlock("Double Click to Edit");
         notebook.add(block);
-        addContainer(block);
+        addContainer(notebook.indexOf(block), block);
 
         //noinspection unchecked
-        block.getComponent().addClickListener(clicked);
+        block.getComponent().addClickListener(event -> handleClickOnBlock(block, notebook));
     }
 
     private void saveNotebook() {
@@ -94,16 +82,32 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
 
         notebook.forEach(block -> {
             //noinspection unchecked
-            block.getComponent().addClickListener(clicked);
+            block.getComponent().addClickListener(event -> handleClickOnBlock(block, notebook));
         });
 
-        notebook.forEach(this::addContainer);
+        notebook.forEachIndexed(this::addContainer);
         selectBlock(notebook, notebook.getFirstBlock());
     }
 
-    private void addContainer(Block block) {
+    private static void handleClickOnBlock(Block blockToBeSelected, NoteBook notebook) {
+        notebook.blocks()
+                .filter(block -> block != blockToBeSelected)
+                .filter(block -> block.getComponent().hasClassName(CLICKED_CSS_CLASS))
+                .forEach(block -> {
+                    if (block.getEditionService().isEditing()) {
+                        block.getEditionService().stop();
+                    }
+                    block.getComponent().removeClassName(CLICKED_CSS_CLASS);
+                });
+        if (!blockToBeSelected.getEditionService().isEditing()) {
+            Focus.requestFocus(blockToBeSelected.getComponent());
+        }
+        blockToBeSelected.getComponent().addClassName(CLICKED_CSS_CLASS);
+    }
+
+    private void addContainer(Integer index, Block block) {
         Component component = block.getComponent();
-        component.getElement().setAttribute("tabindex", "0");
+        component.getElement().setAttribute("tabindex", Integer.toString(index));
         ComponentUtil.addListener(component, KeyDownEvent.class, event -> handleKeyStrokeOnBlock(block, event));
 
         notebookContainer.add(component);

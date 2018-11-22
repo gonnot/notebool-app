@@ -3,8 +3,7 @@ package org.bool;
 import com.bisam.vaadin.uispec.UISpecAssert;
 import com.bisam.vaadin.uispec.VPanel;
 import com.bisam.vaadin.uispec.VTextBox;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.*;
 import org.bool.engine.Block;
 import org.bool.engine.DummyBlock;
 import org.bool.engine.NoteBook;
@@ -63,5 +62,36 @@ class MainViewTest {
 
             assertThat(block.getEditionService().isEditing()).isTrue();
         }
+    }
+
+    @Nested
+    @DisplayName("Click mouse")
+    class ClickMouseTest {
+
+        @Test
+        @DisplayName("When click then select the block")
+        void WhenClickThenSelectTheBlock() {
+            DummyBlock block1 = new DummyBlock("block 1");
+            DummyBlock block2 = new DummyBlock("block 2");
+
+            mainView.displayNotebook(new NoteBook(block1, block2));
+
+            UISpecAssert.assertTrue(panel.getTextBox("block 1").hasCssClassName(Block.CLICKED_CSS_CLASS));
+
+            click(block1.getComponent());
+
+            UISpecAssert.assertTrue(panel.getTextBox("block 1").hasCssClassName(Block.CLICKED_CSS_CLASS));
+            UISpecAssert.assertFalse(panel.getTextBox("block 2").hasCssClassName(Block.CLICKED_CSS_CLASS));
+        }
+
+    }
+
+    private static void click(Component component) {
+        if (component == null) {
+            return;
+        }
+        ComponentUtil.fireEvent(component, new ClickEvent<>(component));
+
+        click(component.getParent().orElse(null));
     }
 }
