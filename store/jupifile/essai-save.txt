@@ -13,8 +13,6 @@ require 'redcarpet'
 markdown = Redcarpet.new(\"Hello World!\")
 puts markdown.to_html
 ```
-
 ################################################org.bool.block.RunCodeBlock
 "qqqq : " + (1==2)
-
 ################################################END
