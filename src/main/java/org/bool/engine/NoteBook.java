@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 public class NoteBook {
     static final String SEPARATOR_STRING = "################################################";
-    private static final String STORE_PATH = "D:\\project\\sideprojects\\notebool-app\\";
+    private static final String STORE_PATH = "D:\\project\\sideprojects\\notebool-app\\store\\jupifile\\";
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 

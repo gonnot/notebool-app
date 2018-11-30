@@ -47,7 +47,7 @@ class RunSessionTest {
 
         DefaultProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(new DefaultProjectBuildingRequest());
         DefaultRepositorySystemSession repositorySession = new DefaultRepositorySystemSession();
-        repositorySession.setLocalRepositoryManager(new SimpleLocalRepositoryManager("D:\\project\\sideprojects\\notebool-app\\fakerepo"));
+        repositorySession.setLocalRepositoryManager(new SimpleLocalRepositoryManager("D:\\project\\sideprojects\\notebool-app\\store\\maven"));
 //        repositorySession.setLocalRepositoryManager(new SimpleLocalRepositoryManager("D:\\cache\\maven\\repository"));
 
         //noinspection unchecked

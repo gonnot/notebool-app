@@ -2,3 +2,4 @@
 .idea/*
 !.idea/codeStyles
 !.idea/runConfigurations
+store/maven
