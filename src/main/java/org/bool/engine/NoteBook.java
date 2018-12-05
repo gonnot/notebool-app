@@ -1,6 +1,7 @@
 package org.bool.engine;
 
 import com.vaadin.flow.component.notification.Notification;
+import org.bool.Configuration;
 import org.bool.block.MarkDownBlock;
 
 import java.io.File;
@@ -19,7 +20,6 @@ import java.util.stream.Stream;
 
 public class NoteBook {
     static final String SEPARATOR_STRING = "################################################";
-    private static final String STORE_PATH = "D:\\project\\sideprojects\\notebool-app\\store\\jupifile\\";
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 
@@ -48,7 +48,7 @@ public class NoteBook {
     }
 
     public void saveInStore(final String fileName) {
-        save(new File(STORE_PATH + fileName).toPath());
+        save(new File(Configuration.JUPIFILE_PATH + fileName).toPath());
     }
 
     void save(Path filePath) {
@@ -70,7 +70,7 @@ public class NoteBook {
     }
 
     public static NoteBook loadFromStore(final String fileName) {
-        return load(Paths.get(STORE_PATH + fileName));
+        return load(Paths.get(Configuration.JUPIFILE_PATH + fileName));
     }
 
     static NoteBook load(Path notebookFilePath) {

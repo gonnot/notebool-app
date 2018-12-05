@@ -26,17 +26,17 @@
 /*
  | Blocks
 */
-bool-markdown, bool-code {
+bool-markdown, bool-code, bool-dependency {
     padding-left: 100px;
     border: 1px solid white;
     border-left: 5px solid white;
 }
 
-bool-markdown:focus, bool-code:focus {
+bool-markdown:focus, bool-code:focus, bool-dependency:focus {
     background-color: lemonchiffon;
 }
 
-bool-code vaadin-text-area, bool-markdown vaadin-text-area {
+bool-code vaadin-text-area, bool-dependency vaadin-text-area, bool-markdown vaadin-text-area {
     width: calc(100% - 5px);
 }
 

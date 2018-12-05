@@ -1,6 +1,9 @@
 package org.bool.block;
 
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.MavenArtifactRepository;
@@ -13,6 +16,7 @@ import org.apache.maven.shared.dependencies.resolve.DependencyResolverException;
 import org.apache.maven.shared.dependencies.resolve.internal.DefaultDependencyResolver;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
+import org.bool.Configuration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
@@ -23,15 +27,19 @@ import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.sonatype.aether.impl.ArtifactResolver;
 import org.sonatype.aether.impl.internal.DefaultArtifactResolver;
 import org.sonatype.aether.impl.internal.DefaultRemoteRepositoryManager;
-import org.sonatype.aether.impl.internal.DefaultServiceLocator;
 import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManager;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+@Tag("bool-dependency")
+@HtmlImport("styles/block/MavenDependencyBlock.html")
 public class MavenDependencyBlock extends AbstractActionBlock {
+
     public MavenDependencyBlock() {
     }
 
@@ -41,63 +49,85 @@ public class MavenDependencyBlock extends AbstractActionBlock {
 
     @Override
     protected void evaluate(String script, Div outputText) {
+        try {
+            Iterable<ArtifactResult> results = new MavenDependencyDownloader(Configuration.REPOSITORY_PATH).download(script);
+            String outputCollect = StreamSupport.stream(results.spliterator(), false)
+                                                .map(result -> result.getArtifact().toString())
+                                                .collect(Collectors.joining("\n"));
+            outputText.setText(outputCollect);
 
+            results.forEach(artifact -> runSession.addToClasspath(artifact.getArtifact().getFile().getAbsolutePath()));
+        }
+        catch (Exception e) {
+            Notification.show(e.getMessage());
+        }
     }
 
-    private void download() throws PlexusContainerException, ContextException, DependencyResolverException {
-        DefaultDependableCoordinate coordinate = new DefaultDependableCoordinate();
-        coordinate.setGroupId("joda-time");
-        coordinate.setArtifactId("joda-time");
-        coordinate.setVersion("2.10");
-//        coordinate.setVersion("2.9.4");
-        coordinate.setType("jar");
+    static interface DependencyDownloader {
+        Iterable<ArtifactResult> download(String dependency) throws PlexusContainerException, ContextException, DependencyResolverException;
+    }
 
-        ArtifactRepositoryPolicy downloadOnlyIfNeeded = new ArtifactRepositoryPolicy(true,
-                                                                                     ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER,
-                                                                                     ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+    static class MavenDependencyDownloader implements DependencyDownloader {
 
-        DefaultProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(new DefaultProjectBuildingRequest());
-        DefaultRepositorySystemSession repositorySession = new DefaultRepositorySystemSession();
-        repositorySession.setLocalRepositoryManager(new SimpleLocalRepositoryManager("D:\\project\\sideprojects\\notebool-app\\store\\maven"));
-//        repositorySession.setLocalRepositoryManager(new SimpleLocalRepositoryManager("D:\\cache\\maven\\repository"));
+        private final String repositoryPath;
 
-        //noinspection unchecked
-        repositorySession.setSystemProperties((Map)System.getProperties());
-        buildingRequest.setRepositorySession(repositorySession);
+        MavenDependencyDownloader(String repositoryPath) {
+            this.repositoryPath = repositoryPath;
+        }
 
-        List<ArtifactRepository> repoList = new ArrayList<>();
-        repoList.add(new MavenArtifactRepository("central",
-                                                 "https://repo.maven.apache.org/maven2/",
-                                                 new DefaultRepositoryLayout(),
-                                                 downloadOnlyIfNeeded,
-                                                 downloadOnlyIfNeeded));
-        buildingRequest.setRemoteRepositories(repoList);
+        @Override
+        public Iterable<ArtifactResult> download(String dependency) throws PlexusContainerException, ContextException, DependencyResolverException {
+            DefaultDependableCoordinate coordinate = extractCoordinate(dependency);
 
-        PlexusContainer plexusContainer = new DefaultPlexusContainer();
+            ArtifactRepositoryPolicy downloadOnlyIfNeeded = new ArtifactRepositoryPolicy(true,
+                                                                                         ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER,
+                                                                                         ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
 
-        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
-        DefaultRemoteRepositoryManager remoteRepositoryManager = new DefaultRemoteRepositoryManager();
-        remoteRepositoryManager.addRepositoryConnectorFactory(new WagonRepositoryConnectorFactory());
-        artifactResolver.setRemoteRepositoryManager(remoteRepositoryManager);
-        artifactResolver.initService(new DefaultServiceLocator());
-        plexusContainer.addComponent(artifactResolver, ArtifactResolver.class, "maven3");
+            DefaultProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(new DefaultProjectBuildingRequest());
+            DefaultRepositorySystemSession repositorySession = new DefaultRepositorySystemSession();
+            repositorySession.setLocalRepositoryManager(new SimpleLocalRepositoryManager(repositoryPath));
 
-        LightweightHttpWagon lightweightHttpWagon = new LightweightHttpWagon();
-//        lightweightHttpWagon.setAuthenticator(new LightweightHttpWagonAuthenticator());
-        plexusContainer.addComponent(lightweightHttpWagon, Wagon.class, "http");
+            //noinspection unchecked
+            repositorySession.setSystemProperties((Map)System.getProperties());
+            buildingRequest.setRepositorySession(repositorySession);
 
-        DefaultDependencyResolver dependencyResolver = new DefaultDependencyResolver();
+            List<ArtifactRepository> repoList = new ArrayList<>();
+            repoList.add(new MavenArtifactRepository("central",
+                                                     "https://repo.maven.apache.org/maven2/",
+                                                     new DefaultRepositoryLayout(),
+                                                     downloadOnlyIfNeeded,
+                                                     downloadOnlyIfNeeded));
+            buildingRequest.setRemoteRepositories(repoList);
 
-        DefaultContext context = new DefaultContext();
-        context.put(PlexusConstants.PLEXUS_KEY, plexusContainer);
-        dependencyResolver.contextualize(context);
+            PlexusContainer plexusContainer = new DefaultPlexusContainer();
 
-        Iterable<ArtifactResult> artifactResults = dependencyResolver.resolveDependencies(buildingRequest, coordinate, ScopeFilter.excluding("test"));
+            DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
+            DefaultRemoteRepositoryManager remoteRepositoryManager = new DefaultRemoteRepositoryManager();
+            remoteRepositoryManager.addRepositoryConnectorFactory(new WagonRepositoryConnectorFactory());
+            artifactResolver.setRemoteRepositoryManager(remoteRepositoryManager);
+            artifactResolver.initService(new org.apache.maven.repository.internal.DefaultServiceLocator());
+            plexusContainer.addComponent(artifactResolver, ArtifactResolver.class, "maven3");
 
-        for (ArtifactResult artifactResult : artifactResults) {
-            System.out.println(">   " + artifactResult.getArtifact());
-            System.out.println("    " + artifactResult.getArtifact().getScope());
-            System.out.println("    " + artifactResult.getArtifact().getFile());
+            LightweightHttpWagon lightweightHttpWagon = new LightweightHttpWagon();
+            plexusContainer.addComponent(lightweightHttpWagon, Wagon.class, "http");
+
+            DefaultDependencyResolver dependencyResolver = new DefaultDependencyResolver();
+
+            DefaultContext context = new DefaultContext();
+            context.put(PlexusConstants.PLEXUS_KEY, plexusContainer);
+            dependencyResolver.contextualize(context);
+
+            return dependencyResolver.resolveDependencies(buildingRequest, coordinate, ScopeFilter.excluding("test"));
+        }
+
+        private DefaultDependableCoordinate extractCoordinate(String dependency) {
+            String[] split = dependency.split(":");
+            DefaultDependableCoordinate coordinate = new DefaultDependableCoordinate();
+            coordinate.setGroupId(split[0]);
+            coordinate.setArtifactId(split[1]);
+            coordinate.setVersion(split[2]);
+            coordinate.setType(split[3]);
+            return coordinate;
         }
     }
 }

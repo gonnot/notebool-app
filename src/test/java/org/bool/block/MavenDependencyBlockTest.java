@@ -1,15 +1,80 @@
 package org.bool.block;
 
-import org.bool.engine.NoteBook;
+import com.bisam.vaadin.uispec.AbstractVUIComponent;
+import com.bisam.vaadin.uispec.VPanel;
+import com.bisam.vaadin.uispec.feature.HasStyleFeature;
+import com.bisam.vaadin.uispec.feature.HasTextFeature;
+import com.vaadin.flow.component.html.Div;
+import org.apache.maven.shared.artifact.resolve.ArtifactResult;
+import org.bool.block.MavenDependencyBlock.MavenDependencyDownloader;
+import org.bool.engine.RunSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.bool.Configuration.REPOSITORY_PATH;
+
 class MavenDependencyBlockTest {
-    private final NoteBook noteBook = new NoteBook();
 
     @Test
-    @DisplayName("s")
-    void s() {
-        noteBook.add(new MavenDependencyBlock());
+    @DisplayName("set joda-time and download")
+    void set_jodatime_and_download() {
+        RunSession runSession = new RunSession();
+        MavenDependencyBlock dependencyBlock = new MavenDependencyBlock();
+        dependencyBlock.getPersistenceService().init(runSession);
+
+        VPanel<MavenDependencyBlock> panel = new VPanel<>(dependencyBlock);
+
+        panel.getTextBox().setText("joda-time:joda-time:2.10:jar");
+
+        panel.getButton().click();
+
+        VDiv resultDiv = panel.getVaadinExtendedComponent("outputText", component -> new VDiv((Div)component), Div.class);
+
+        String text = resultDiv.getVaadinComponent().getText();
+        assertThat(text).isEqualTo("joda-time:joda-time:jar:2.10\n" +
+                                   "org.joda:joda-convert:jar:1.2");
+
+        assertThat(runSession.evaluate("new org.joda.time.DateTime(0).getYear()"))
+                .containsIgnoringCase("1970");
     }
+
+    @Test
+    @DisplayName("load")
+    void load() {
+        RunSession runSession = new RunSession();
+        MavenDependencyBlock dependencyBlock = new MavenDependencyBlock("joda-time:joda-time:2.10:jar");
+        dependencyBlock.getPersistenceService().init(runSession);
+
+        VPanel<MavenDependencyBlock> panel = new VPanel<>(dependencyBlock);
+
+        assertThat(panel.getTextBox().getText()).isEqualTo("joda-time:joda-time:2.10:jar");
+    }
+
+    public class VDiv extends AbstractVUIComponent<Div> implements HasTextFeature<Div>, HasStyleFeature<Div> {
+        VDiv(Div component) {
+            super(component);
+        }
+    }
+
+    @Test
+    @DisplayName("download dependency by code")
+    void download_dependency_by_code() throws Exception {
+        MavenDependencyDownloader downloader = new MavenDependencyDownloader(REPOSITORY_PATH);
+
+        Iterable<ArtifactResult> results = downloader.download("joda-time:joda-time:2.10:jar");
+
+        String resultAsString = StreamSupport.stream(results.spliterator(), false)
+                                             .map(result -> result.getArtifact().toString())
+                                             .collect(Collectors.joining("\n"));
+
+        assertThat(resultAsString)
+                .isEqualTo("joda-time:joda-time:jar:2.10\n" +
+                           "org.joda:joda-convert:jar:1.2");
+
+    }
+
 }

@@ -21,6 +21,7 @@ abstract class AbstractActionBlock extends Div implements Block {
     AbstractActionBlock() {
         codeText = new TextArea();
         Div outputText = new Div();
+        outputText.setId("outputText");
 
         codeText.setValueChangeMode(ValueChangeMode.EAGER);
 

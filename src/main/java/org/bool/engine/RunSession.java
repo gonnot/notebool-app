@@ -8,12 +8,15 @@ import java.util.List;
 public class RunSession {
     private final JShell jShell;
 
-    RunSession() {
+    public RunSession() {
         this.jShell = JShell.builder()
                             .out(System.out)
                             .err(System.err)
                             .build();
-        jShell.addToClasspath("D:\\cache\\maven\\repository\\joda-time\\joda-time\\2.9.4\\joda-time-2.9.4.jar");
+    }
+
+    public void addToClasspath(String dependencyPath) {
+        jShell.addToClasspath(dependencyPath);
     }
 
     public String evaluate(String script) {
