@@ -1,10 +1,19 @@
 /*
+ | Root
+*/
+
+.root-container {
+    background-color: lightgray;
+    min-height: 100%;
+    width: 100%;
+}
+
+/*
  | Header
 */
 .notebook-container {
     max-width: 900px;
     background-color: white;
-    overflow: hidden;
 }
 
 .notebook-header {
@@ -14,15 +23,6 @@
 .notebook-header img {
     height: 45px;
 }
-
-/*
- | Root
-*/
-
-.root-container {
-    background-color: lightgray;
-}
-
 /*
  | Blocks
 */

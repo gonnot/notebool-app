@@ -36,7 +36,6 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
      */
     public MainView() {
         this.setJustifyContentMode(JustifyContentMode.CENTER);
-        this.setSizeFull();
         this.addClassName("root-container");
 
         notebookContainer = new VerticalLayout();
