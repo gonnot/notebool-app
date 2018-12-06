@@ -17,12 +17,12 @@ public class RunCodeBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void evaluate(String script, Div outputText) {
+    protected void evaluate(String input, Div outputComponent) {
         if (runSession != null) {
-            outputText.setText(runSession.evaluate(script));
+            outputComponent.setText(runSession.evaluate(input));
         }
         else {
-            outputText.setText("Initialisation issue");
+            outputComponent.setText("Initialisation issue");
         }
     }
 

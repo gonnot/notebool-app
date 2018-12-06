@@ -48,13 +48,13 @@ public class MavenDependencyBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void evaluate(String script, Div outputText) {
+    protected void evaluate(String input, Div outputComponent) {
         try {
-            Iterable<ArtifactResult> results = new MavenDependencyDownloader(Configuration.REPOSITORY_PATH).download(script);
-            String outputCollect = StreamSupport.stream(results.spliterator(), false)
-                                                .map(result -> result.getArtifact().toString())
-                                                .collect(Collectors.joining("\n"));
-            outputText.setText(outputCollect);
+            Iterable<ArtifactResult> results = new MavenDependencyDownloader(Configuration.REPOSITORY_PATH).download(input.trim());
+            String output = StreamSupport.stream(results.spliterator(), false)
+                                         .map(result -> result.getArtifact().toString())
+                                         .collect(Collectors.joining("\n"));
+            outputComponent.setText(output);
 
             results.forEach(artifact -> runSession.addToClasspath(artifact.getArtifact().getFile().getAbsolutePath()));
         }

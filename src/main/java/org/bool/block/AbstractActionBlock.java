@@ -47,7 +47,7 @@ abstract class AbstractActionBlock extends Div implements Block {
         this.codeText.setValue(text);
     }
 
-    protected abstract void evaluate(String script, Div outputText);
+    protected abstract void evaluate(String input, Div outputComponent);
 
     @Override
     public EditionService getEditionService() {

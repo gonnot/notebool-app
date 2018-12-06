@@ -28,7 +28,7 @@ class MavenDependencyBlockTest {
 
         VPanel<MavenDependencyBlock> panel = new VPanel<>(dependencyBlock);
 
-        panel.getTextBox().setText("joda-time:joda-time:2.10:jar");
+        panel.getTextBox().setText("    joda-time:joda-time:2.10:jar\n\n\n");
 
         panel.getButton().click();
 
