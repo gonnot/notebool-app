@@ -1,31 +1,32 @@
+<!--suppress CssUnusedSymbol -->
 <custom-style>
     <style>
-        bool-code {
+        .action-block {
             position: relative;
         }
 
-        bool-code vaadin-button {
+        .action-block vaadin-button {
             visibility: hidden;
             position: absolute;
             top: 0;
             left: 0;
         }
 
-        bool-code.clicked vaadin-button {
+        .action-block.clicked vaadin-button {
             visibility: visible;
         }
 
-        bool-code div {
+        .action-block div {
             color: darkgray;
             font-family: monospace;
             white-space: pre;
         }
     </style>
 
-    <dom-module id="my-code-block-style" theme-for="vaadin-text-area">
+    <dom-module id="my-dependency-block-style" theme-for="vaadin-text-area">
         <template>
             <style>
-                :host-context(bool-code.editing) [part="input-field"] {
+                :host-context(.action-block.editing) [part="input-field"] {
                     background-color: white;
                     border: 1px solid lightgreen;
                 }

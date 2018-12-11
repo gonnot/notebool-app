@@ -1,7 +1,6 @@
 package org.bool.block;
 
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -37,7 +36,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Tag("bool-dependency")
-@HtmlImport("styles/block/MavenDependencyBlock.html")
 public class MavenDependencyBlock extends AbstractActionBlock {
 
     public MavenDependencyBlock() {
@@ -63,7 +61,7 @@ public class MavenDependencyBlock extends AbstractActionBlock {
         }
     }
 
-    static interface DependencyDownloader {
+    interface DependencyDownloader {
         Iterable<ArtifactResult> download(String dependency) throws PlexusContainerException, ContextException, DependencyResolverException;
     }
 

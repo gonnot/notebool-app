@@ -1,11 +1,9 @@
 package org.bool.block;
 
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
 
 @Tag("bool-code")
-@HtmlImport("styles/block/RunCodeBlock.html")
 public class RunCodeBlock extends AbstractActionBlock {
 
     public RunCodeBlock() {

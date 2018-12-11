@@ -4,6 +4,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -13,12 +14,15 @@ import org.bool.engine.RunSession;
 import org.bool.util.Focus;
 import org.bool.util.KeyboardShortcut;
 
+@HtmlImport("styles/block/AbstractActionBlock.html")
 abstract class AbstractActionBlock extends Div implements Block {
+    private static final String CSS_BLOCK_CLASS_NAME = "action-block";
     private final TextArea codeText;
     private final InternalEditionService internalEditionMode = new InternalEditionService();
     RunSession runSession;
 
     AbstractActionBlock() {
+        addClassName(CSS_BLOCK_CLASS_NAME);
         codeText = new TextArea();
         Div outputText = new Div();
         outputText.setId("outputText");
