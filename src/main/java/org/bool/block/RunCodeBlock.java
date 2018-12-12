@@ -2,6 +2,8 @@ package org.bool.block;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import org.bool.engine.RunSession;
 
 @Tag("bool-code")
 public class RunCodeBlock extends AbstractActionBlock {
@@ -15,9 +17,11 @@ public class RunCodeBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void evaluate(String input, Div outputComponent) {
+    protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent) {
         if (runSession != null) {
-            outputComponent.setText(runSession.evaluate(input));
+            RunSession.Result evaluationResult = runSession.evaluate(input);
+            outputComponent.setText(evaluationResult.getOutput());
+            evaluationCountComponent.setText(" [ " + evaluationResult.getCount() + " ]:");
         }
         else {
             outputComponent.setText("Initialisation issue");

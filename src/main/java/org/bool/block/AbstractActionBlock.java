@@ -6,6 +6,7 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -17,13 +18,16 @@ import org.bool.util.KeyboardShortcut;
 @HtmlImport("styles/block/AbstractActionBlock.html")
 abstract class AbstractActionBlock extends Div implements Block {
     private static final String CSS_BLOCK_CLASS_NAME = "action-block";
-    private final TextArea codeText;
+    private final TextArea codeText = new TextArea();
     private final InternalEditionService internalEditionMode = new InternalEditionService();
     RunSession runSession;
 
     AbstractActionBlock() {
         addClassName(CSS_BLOCK_CLASS_NAME);
-        codeText = new TextArea();
+
+        Span evaluationCountSpan = new Span("[ ]:");
+        evaluationCountSpan.setId("evaluationCount");
+
         Div outputText = new Div();
         outputText.setId("outputText");
 
@@ -31,19 +35,19 @@ abstract class AbstractActionBlock extends Div implements Block {
 
         Button button = new Button(VaadinIcon.STEP_FORWARD.create());
         button.getElement().setAttribute("theme", "tertiary");
-        button.addClickListener(event -> evaluate(codeText.getValue(), outputText));
+        button.addClickListener(event -> evaluate(codeText.getValue(), outputText, evaluationCountSpan));
 
         //noinspection unchecked
         ComponentUtil.addListener(codeText, ClickEvent.class, (ComponentEventListener)event -> getEditionService().start());
 
         codeText.addKeyPressListener(keyPressEvent -> {
             if (KeyboardShortcut.isControlEnter(keyPressEvent)) {
-                evaluate(codeText.getValue(), outputText);
+                evaluate(codeText.getValue(), outputText, evaluationCountSpan);
                 getEditionService().stop();
             }
         });
 
-        add(codeText, outputText, button);
+        add(codeText, outputText, button, evaluationCountSpan);
     }
 
     AbstractActionBlock(String text) {
@@ -51,7 +55,7 @@ abstract class AbstractActionBlock extends Div implements Block {
         this.codeText.setValue(text);
     }
 
-    protected abstract void evaluate(String input, Div outputComponent);
+    protected abstract void evaluate(String input, Div outputComponent, Span evaluationCountComponent);
 
     @Override
     public EditionService getEditionService() {

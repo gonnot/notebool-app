@@ -1,13 +1,10 @@
 package org.bool.block;
 
-import com.bisam.vaadin.uispec.AbstractVUIComponent;
 import com.bisam.vaadin.uispec.VPanel;
-import com.bisam.vaadin.uispec.feature.HasStyleFeature;
-import com.bisam.vaadin.uispec.feature.HasTextFeature;
-import com.vaadin.flow.component.html.Div;
 import org.apache.maven.shared.artifact.resolve.ArtifactResult;
 import org.bool.block.MavenDependencyBlock.MavenDependencyDownloader;
 import org.bool.engine.RunSession;
+import org.bool.uispec4j.VDiv;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,13 +29,13 @@ class MavenDependencyBlockTest {
 
         panel.getButton().click();
 
-        VDiv resultDiv = panel.getVaadinExtendedComponent("outputText", component -> new VDiv((Div)component), Div.class);
+        VDiv resultDiv = VDiv.get(panel, "outputText");
 
         String text = resultDiv.getVaadinComponent().getText();
         assertThat(text).isEqualTo("joda-time:joda-time:jar:2.10\n" +
                                    "org.joda:joda-convert:jar:1.2");
 
-        assertThat(runSession.evaluate("new org.joda.time.DateTime(0).getYear()"))
+        assertThat(runSession.evaluate("new org.joda.time.DateTime(0).getYear()").getOutput())
                 .containsIgnoringCase("1970");
     }
 
@@ -52,12 +49,6 @@ class MavenDependencyBlockTest {
         VPanel<MavenDependencyBlock> panel = new VPanel<>(dependencyBlock);
 
         assertThat(panel.getTextBox().getText()).isEqualTo("joda-time:joda-time:2.10:jar");
-    }
-
-    public class VDiv extends AbstractVUIComponent<Div> implements HasTextFeature<Div>, HasStyleFeature<Div> {
-        VDiv(Div component) {
-            super(component);
-        }
     }
 
     @Test

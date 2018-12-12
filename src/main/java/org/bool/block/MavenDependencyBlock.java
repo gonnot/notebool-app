@@ -2,6 +2,7 @@ package org.bool.block;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
@@ -46,7 +47,7 @@ public class MavenDependencyBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void evaluate(String input, Div outputComponent) {
+    protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent) {
         try {
             Iterable<ArtifactResult> results = new MavenDependencyDownloader(Configuration.REPOSITORY_PATH).download(input.trim());
             String output = StreamSupport.stream(results.spliterator(), false)
