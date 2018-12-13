@@ -14,6 +14,8 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import org.bool.block.MarkDownBlock;
+import org.bool.block.MavenDependencyBlock;
+import org.bool.block.RunCodeBlock;
 import org.bool.engine.Block;
 import org.bool.engine.NoteBook;
 import org.bool.util.Focus;
@@ -50,13 +52,33 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
                 new Image("jupiler-logo.png", "logo"),
                 new Button("Save", VaadinIcon.DOWNLOAD.create(), event -> saveNotebook()),
                 new Button("Load", VaadinIcon.WALLET.create(), event -> loadNotebook()),
-                new Button("Add", VaadinIcon.ADD_DOCK.create(), event -> addBlock()));
+                new Button("Documentation", VaadinIcon.ADD_DOCK.create(), event -> addDocumentationBlock()),
+                new Button("Dependency", VaadinIcon.ADD_DOCK.create(), event -> addDependencyBlock()),
+                new Button("Java", VaadinIcon.ADD_DOCK.create(), event -> runCodeBlock()));
         topToolbar.addClassName("notebook-header");
         return topToolbar;
     }
 
-    private void addBlock() {
+    private void addDocumentationBlock() {
         MarkDownBlock block = new MarkDownBlock("Double Click to Edit");
+        notebook.add(block);
+        addContainer(notebook.indexOf(block), block);
+
+        //noinspection unchecked
+        block.getComponent().addClickListener(event -> handleClickOnBlock(block, notebook));
+    }
+
+    private void runCodeBlock() {
+        RunCodeBlock block = new RunCodeBlock("Double Click to Edit");
+        notebook.add(block);
+        addContainer(notebook.indexOf(block), block);
+
+        //noinspection unchecked
+        block.getComponent().addClickListener(event -> handleClickOnBlock(block, notebook));
+    }
+
+    private void addDependencyBlock() {
+        MavenDependencyBlock block = new MavenDependencyBlock("Double Click to Edit");
         notebook.add(block);
         addContainer(notebook.indexOf(block), block);
 

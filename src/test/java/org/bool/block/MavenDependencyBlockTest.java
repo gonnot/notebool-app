@@ -5,6 +5,7 @@ import org.apache.maven.shared.artifact.resolve.ArtifactResult;
 import org.bool.block.MavenDependencyBlock.MavenDependencyDownloader;
 import org.bool.engine.RunSession;
 import org.bool.uispec4j.VDiv;
+import org.bool.uispec4j.VSpan;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,9 @@ class MavenDependencyBlockTest {
 
         assertThat(runSession.evaluate("new org.joda.time.DateTime(0).getYear()").getOutput())
                 .containsIgnoringCase("1970");
+
+        VSpan evaluationCount = VSpan.get(panel, "evaluationCount");
+        assertThat(evaluationCount.getVaadinComponent().getText().trim()).isEqualTo("[ 1 ]:");
     }
 
     @Test

@@ -54,8 +54,11 @@ public class MavenDependencyBlock extends AbstractActionBlock {
                                          .map(result -> result.getArtifact().toString())
                                          .collect(Collectors.joining("\n"));
             outputComponent.setText(output);
-
-            results.forEach(artifact -> runSession.addToClasspath(artifact.getArtifact().getFile().getAbsolutePath()));
+            int count = 0;
+            for (ArtifactResult artifact : results) {
+                count = runSession.addToClasspath(artifact.getArtifact().getFile().getAbsolutePath()).getCount();
+            }
+            evaluationCountComponent.setText("[ " + count + " ]:");
         }
         catch (Exception e) {
             Notification.show(e.getMessage());

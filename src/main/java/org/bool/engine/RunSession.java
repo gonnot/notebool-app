@@ -16,8 +16,9 @@ public class RunSession {
                             .build();
     }
 
-    public void addToClasspath(String dependencyPath) {
+    public Result addToClasspath(String dependencyPath) {
         jShell.addToClasspath(dependencyPath);
+        return new Result(null, evaluationCount++);
     }
 
     public Result evaluate(String script) {

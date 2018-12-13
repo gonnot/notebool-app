@@ -2,7 +2,6 @@ package org.bool.engine;
 
 import com.vaadin.flow.component.notification.Notification;
 import org.bool.Configuration;
-import org.bool.block.MarkDownBlock;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -156,7 +155,7 @@ public class NoteBook {
         return content.get(0);
     }
 
-    public Integer indexOf(MarkDownBlock block) {
+    public Integer indexOf(Block block) {
         return content.indexOf(block);
     }
 }
