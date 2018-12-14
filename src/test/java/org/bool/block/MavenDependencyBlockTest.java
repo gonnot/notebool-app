@@ -26,7 +26,7 @@ class MavenDependencyBlockTest {
 
         VPanel<MavenDependencyBlock> panel = new VPanel<>(dependencyBlock);
 
-        panel.getTextBox().setText("    joda-time:joda-time:2.10:jar\n\n\n");
+        panel.getTextBox().setText("    joda-time:joda-time:jar:2.10\n\n\n");
 
         panel.getButton().click();
 
@@ -40,19 +40,19 @@ class MavenDependencyBlockTest {
                 .containsIgnoringCase("1970");
 
         VSpan evaluationCount = VSpan.get(panel, "evaluationCount");
-        assertThat(evaluationCount.getVaadinComponent().getText().trim()).isEqualTo("[ 1 ]:");
+        assertThat(evaluationCount.getVaadinComponent().getText().trim()).isEqualTo("[ 2 ]:");
     }
 
     @Test
     @DisplayName("load")
     void load() {
         RunSession runSession = new RunSession();
-        MavenDependencyBlock dependencyBlock = new MavenDependencyBlock("joda-time:joda-time:2.10:jar");
+        MavenDependencyBlock dependencyBlock = new MavenDependencyBlock("joda-time:joda-time:jar:2.10");
         dependencyBlock.getPersistenceService().init(runSession);
 
         VPanel<MavenDependencyBlock> panel = new VPanel<>(dependencyBlock);
 
-        assertThat(panel.getTextBox().getText()).isEqualTo("joda-time:joda-time:2.10:jar");
+        assertThat(panel.getTextBox().getText()).isEqualTo("joda-time:joda-time:jar:2.10");
     }
 
     @Test
@@ -60,7 +60,7 @@ class MavenDependencyBlockTest {
     void download_dependency_by_code() throws Exception {
         MavenDependencyDownloader downloader = new MavenDependencyDownloader(REPOSITORY_PATH);
 
-        Iterable<ArtifactResult> results = downloader.download("joda-time:joda-time:2.10:jar");
+        Iterable<ArtifactResult> results = downloader.download("joda-time:joda-time:jar:2.10");
 
         String resultAsString = StreamSupport.stream(results.spliterator(), false)
                                              .map(result -> result.getArtifact().toString())

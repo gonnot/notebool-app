@@ -127,8 +127,8 @@ public class MavenDependencyBlock extends AbstractActionBlock {
             DefaultDependableCoordinate coordinate = new DefaultDependableCoordinate();
             coordinate.setGroupId(split[0]);
             coordinate.setArtifactId(split[1]);
-            coordinate.setVersion(split[2]);
-            coordinate.setType(split[3]);
+            coordinate.setType(split[2]);
+            coordinate.setVersion(split[3]);
             return coordinate;
         }
     }
