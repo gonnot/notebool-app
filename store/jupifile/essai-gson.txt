@@ -1,0 +1,74 @@
+################################################org.bool.block.MarkDownBlock
+## Installation
+
+## Sommaire 
+
+* [Joda](essai-joda.txt)
+* [Byte Buddy](essai-buddy.txt)
+
+## Download Bool
+
+You can download the latest release tarball directly from [google](http://google.com)
+
+```
+class MaClasse {
+    int i;
+}
+require 'redcarpet'
+markdown = Redcarpet.new(\"Hello World!\")
+puts markdown.to_html
+```
+################################################org.bool.block.RunCodeBlock
+"qqqq : " + (1==2)
+################################################org.bool.block.MavenDependencyBlock
+com.google.code.gson:gson:jar:2.8.5
+################################################org.bool.block.RunCodeBlock
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+################################################org.bool.block.RunCodeBlock
+final GsonBuilder builder = new GsonBuilder();
+final Gson gson = builder.create();
+ 
+System.out.println("1 -> " + gson.toJson(1));
+System.out.println("abcde -> " + gson.toJson("abcde"));
+System.out.println("Long(10) -> " + gson.toJson(new Long(10)));
+final int[] values = { 1, 2, 3 };
+System.out.println("{1,2,3} -> " + gson.toJson(values));
+################################################org.bool.block.RunCodeBlock
+final int[] values = { 1, 2, 3 };
+System.out.println("{1,2,3} -> " + gson.toJson(values));
+################################################org.bool.block.RunCodeBlock
+import com.google.gson.annotations.SerializedName;
+################################################org.bool.block.RunCodeBlock
+public class Coordonnees {
+private final int abscisse;
+private final int ordonnee;
+
+public Coordonnees(final int abscisse, final int ordonnee) {
+super();
+
+this.abscisse = abscisse;
+this.ordonnee = ordonnee;
+}
+
+public int getAbscisse() {
+return this.abscisse;
+}
+ 
+public int getOrdonnee() {
+return this.ordonnee;
+}
+ 
+@Override
+public String toString() {
+return "Coordonnees [abscisse=" + this.abscisse + ", ordonnee=" + this.ordonnee + "]";
+}
+}
+################################################org.bool.block.RunCodeBlock
+ 
+final Coordonnees coordonnees = new Coordonnees(120, 450);
+ 
+final String json = gson.toJson(coordonnees);
+System.out.println("Resultat = " + json);
+
+################################################END
