@@ -164,4 +164,5 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         fileName = Objects.requireNonNullElse(parameter, "essai-save.txt");
         loadNotebook();
     }
+
 }

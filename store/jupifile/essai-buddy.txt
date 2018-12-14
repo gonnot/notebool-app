@@ -1,0 +1,23 @@
+################################################org.bool.block.MarkDownBlock
+## Librairie Byte Buddy
+
+### Dépendance buildr
+################################################org.bool.block.MavenDependencyBlock
+net.bytebuddy:byte-buddy-agent:jar:1.9.6
+################################################org.bool.block.MarkDownBlock
+### Créationd'une classe
+
+Pour créer une classe dynamique ...
+################################################org.bool.block.RunCodeBlock
+Class<?> dynamicType = new net.bytebuddy.ByteBuddy()
+                .subclass(Object.class)
+                .method(net.bytebuddy.matcher.ElementMatchers.named("toString"))
+                .intercept(net.bytebuddy.implementation.FixedValue.value("Hello World!"))
+                .make()
+                .load(Object.class.getClassLoader())
+                .getLoaded();
+################################################org.bool.block.MarkDownBlock
+Example d'utilisation
+################################################org.bool.block.RunCodeBlock
+dynamicType.newInstance().toString()
+################################################END
