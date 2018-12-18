@@ -62,6 +62,20 @@ class MainViewTest {
 
             assertThat(block.getEditionService().isEditing()).isTrue();
         }
+
+        @Test
+        @DisplayName("When press esc then stop edition of selected block")
+        void WhenPressEscThenStopEditOfSelectedBox() {
+            DummyBlock block = new DummyBlock("block 1");
+
+            mainView.displayNotebook(new NoteBook(block));
+            block.getEditionService().start();
+
+            VTextBox textBox = panel.getTextBox("block 1");
+            textBox.pressKeyDown(Key.ESCAPE);
+
+            assertThat(block.getEditionService().isEditing()).isFalse();
+        }
     }
 
     @Nested

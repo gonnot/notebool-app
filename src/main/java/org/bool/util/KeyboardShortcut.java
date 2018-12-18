@@ -20,4 +20,8 @@ public class KeyboardShortcut {
     public static boolean isEnter(KeyDownEvent event) {
         return event.getKey().getKeys().contains("Enter");
     }
+
+    public static boolean isEscape(KeyDownEvent event) {
+        return event.getKey().getKeys().contains("Escape");
+    }
 }

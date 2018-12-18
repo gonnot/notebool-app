@@ -136,7 +136,9 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
 
     private void handleKeyStrokeOnBlock(Block block, KeyDownEvent event) {
         if (block.getEditionService().isEditing()) {
-            System.out.println("Block is in editing mode - do not handle arrow");
+            if (KeyboardShortcut.isEscape(event)) {
+                block.getEditionService().stop();
+            }
             return;
         }
 
