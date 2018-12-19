@@ -47,4 +47,9 @@ public class DummyBlock extends TextArea implements Block, ClickNotifier {
             return isEditing;
         }
     }
+
+    @Override
+    public String toString() {
+        return "DummyBlock{" + getValue() + "}";
+    }
 }

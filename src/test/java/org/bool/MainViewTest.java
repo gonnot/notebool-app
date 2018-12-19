@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(VaadinUIExtension.class)
@@ -96,6 +98,34 @@ class MainViewTest {
 
             UISpecAssert.assertTrue(panel.getTextBox("block 1").hasCssClassName(Block.CLICKED_CSS_CLASS));
             UISpecAssert.assertFalse(panel.getTextBox("block 2").hasCssClassName(Block.CLICKED_CSS_CLASS));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Notebook edition")
+    class NotebookEditionTest {
+        @Test
+        @DisplayName("When press enter then edit selected block")
+        void WhenPressEnterThenEditSelectedBox() {
+            DummyBlock block1 = new DummyBlock("block 1");
+            DummyBlock block2 = new DummyBlock("block 2");
+            NoteBook notebook = new NoteBook(block1, block2);
+
+            mainView.displayNotebook(notebook);
+            block1.getEditionService().start();
+
+            pressCtrlDown(block1);
+
+            assertThat(notebook.blocks().collect(Collectors.toList())).containsSequence(block2, block1);
+            assertThat(block1.getStyle().get("order")).isEqualTo("1");
+            assertThat(block2.getStyle().get("order")).isEqualTo("0");
+        }
+
+        private void pressCtrlDown(DummyBlock block1) {
+            String arrowDown = "ArrowDown";
+            KeyDownEvent keyDownEvent = new KeyDownEvent(block1, true, arrowDown, 0, true, false, false, false, false, false);
+            ComponentUtil.fireEvent(block1, keyDownEvent);
         }
 
     }

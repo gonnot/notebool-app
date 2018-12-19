@@ -5,8 +5,12 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.KeyPressEvent;
 
 public class KeyboardShortcut {
-    public static boolean isControlEnter(KeyPressEvent keyPressEvent) {
-        return keyPressEvent.getModifiers().contains(KeyModifier.CONTROL) && keyPressEvent.getKey().matches("\n");
+    public static boolean isControlEnter(KeyPressEvent event) {
+        return event.getModifiers().contains(KeyModifier.CONTROL) && event.getKey().matches("\n");
+    }
+
+    public static boolean isControlArrowDown(KeyDownEvent event) {
+        return event.getModifiers().contains(KeyModifier.CONTROL) && isArrowDown(event);
     }
 
     public static boolean isArrowUp(KeyDownEvent event) {
@@ -24,4 +28,5 @@ public class KeyboardShortcut {
     public static boolean isEscape(KeyDownEvent event) {
         return event.getKey().getKeys().contains("Escape");
     }
+
 }

@@ -158,4 +158,9 @@ public class NoteBook {
     public Integer indexOf(Block block) {
         return content.indexOf(block);
     }
+
+    public void move(Block block, Integer nextIndex) {
+        content.remove(block);
+        content.add(nextIndex, block);
+    }
 }

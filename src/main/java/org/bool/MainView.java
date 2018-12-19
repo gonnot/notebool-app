@@ -127,14 +127,26 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     private void addContainer(Integer index, Block block) {
+        setTabIndexAndOrder(block, index);
+
         Component component = block.getComponent();
-        component.getElement().setAttribute("tabindex", Integer.toString(index));
         ComponentUtil.addListener(component, KeyDownEvent.class, event -> handleKeyStrokeOnBlock(block, event));
 
         notebookContainer.add(component);
     }
 
     private void handleKeyStrokeOnBlock(Block block, KeyDownEvent event) {
+        if (KeyboardShortcut.isControlArrowDown(event)) {
+            Integer currentIndex = notebook.indexOf(block);
+            Block nextBlock = notebook.nextOf(block);
+            Integer nextIndex = notebook.indexOf(nextBlock);
+            setTabIndexAndOrder(block, nextIndex);
+            setTabIndexAndOrder(nextBlock, currentIndex);
+
+            notebook.move(block, nextIndex);
+            return;
+        }
+
         if (block.getEditionService().isEditing()) {
             if (KeyboardShortcut.isEscape(event)) {
                 block.getEditionService().stop();
@@ -165,6 +177,11 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         fileName = Objects.requireNonNullElse(parameter, "essai-save.txt");
         loadNotebook();
+    }
+
+    private static void setTabIndexAndOrder(Block block, Integer index) {
+        block.getComponent().getStyle().set("order", Integer.toString(index));
+        block.getComponent().getElement().setAttribute("tabindex", Integer.toString(index));
     }
 
 }
