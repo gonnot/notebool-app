@@ -127,7 +127,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     private void addContainer(Integer index, Block block) {
-        setTabIndexAndOrder(block, index);
+        setTabIndexAndOrder(index, block);
 
         Component component = block.getComponent();
         ComponentUtil.addListener(component, KeyDownEvent.class, event -> handleKeyStrokeOnBlock(block, event));
@@ -140,10 +140,15 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
             Integer currentIndex = notebook.indexOf(block);
             Block nextBlock = notebook.nextOf(block);
             Integer nextIndex = notebook.indexOf(nextBlock);
-            setTabIndexAndOrder(block, nextIndex);
-            setTabIndexAndOrder(nextBlock, currentIndex);
 
             notebook.move(block, nextIndex);
+            if (nextIndex == 0) {
+                notebook.forEachIndexed(MainView::setTabIndexAndOrder);
+            }
+            else {
+                setTabIndexAndOrder(nextIndex, block);
+                setTabIndexAndOrder(currentIndex, nextBlock);
+            }
             return;
         }
 
@@ -179,7 +184,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         loadNotebook();
     }
 
-    private static void setTabIndexAndOrder(Block block, Integer index) {
+    private static void setTabIndexAndOrder(Integer index, Block block) {
         block.getComponent().getStyle().set("order", Integer.toString(index));
         block.getComponent().getElement().setAttribute("tabindex", Integer.toString(index));
     }

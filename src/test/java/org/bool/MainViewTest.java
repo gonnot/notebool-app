@@ -106,8 +106,8 @@ class MainViewTest {
     @DisplayName("Notebook edition")
     class NotebookEditionTest {
         @Test
-        @DisplayName("When press enter then edit selected block")
-        void WhenPressEnterThenEditSelectedBox() {
+        @DisplayName("When press Ctrl+ArrowDown then move block down")
+        void WhenPressCtrlArrowDownThenMoveBlockDown() {
             DummyBlock block1 = new DummyBlock("block 1");
             DummyBlock block2 = new DummyBlock("block 2");
             NoteBook notebook = new NoteBook(block1, block2);
@@ -118,8 +118,27 @@ class MainViewTest {
             pressCtrlDown(block1);
 
             assertThat(notebook.blocks().collect(Collectors.toList())).containsSequence(block2, block1);
-            assertThat(block1.getStyle().get("order")).isEqualTo("1");
             assertThat(block2.getStyle().get("order")).isEqualTo("0");
+            assertThat(block1.getStyle().get("order")).isEqualTo("1");
+        }
+
+        @Test
+        @DisplayName("When move last block down Then becomes first")
+        void WhenMoveLastBlockDownThenBecomesFirst() {
+            DummyBlock block1 = new DummyBlock("block 1");
+            DummyBlock block2 = new DummyBlock("block 2");
+            DummyBlock block3 = new DummyBlock("block 3");
+            NoteBook notebook = new NoteBook(block1, block2, block3);
+
+            mainView.displayNotebook(notebook);
+            block3.getEditionService().start();
+
+            pressCtrlDown(block3);
+
+            assertThat(notebook.blocks().collect(Collectors.toList())).containsSequence(block3, block1, block2);
+            assertThat(block3.getStyle().get("order")).isEqualTo("0");
+            assertThat(block1.getStyle().get("order")).isEqualTo("1");
+            assertThat(block2.getStyle().get("order")).isEqualTo("2");
         }
 
         private void pressCtrlDown(DummyBlock block1) {
