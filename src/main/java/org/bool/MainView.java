@@ -136,19 +136,15 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     private void handleKeyStrokeOnBlock(Block block, KeyDownEvent event) {
-        if (KeyboardShortcut.isControlArrowDown(event)) {
-            Integer currentIndex = notebook.indexOf(block);
-            Block nextBlock = notebook.nextOf(block);
-            Integer nextIndex = notebook.indexOf(nextBlock);
+        if (KeyboardShortcut.isControlArrowUp(event)) {
+            Long particularIndex = notebook.blocks().count() - 1;
+            swichBlock(block, notebook.previousOf(block), particularIndex.intValue());
+            return;
+        }
 
-            notebook.move(block, nextIndex);
-            if (nextIndex == 0) {
-                notebook.forEachIndexed(MainView::setTabIndexAndOrder);
-            }
-            else {
-                setTabIndexAndOrder(nextIndex, block);
-                setTabIndexAndOrder(currentIndex, nextBlock);
-            }
+        if (KeyboardShortcut.isControlArrowDown(event)) {
+
+            swichBlock(block, notebook.nextOf(block), 0);
             return;
         }
 
@@ -167,6 +163,20 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
         }
         else if (KeyboardShortcut.isEnter(event)) {
             block.getEditionService().start();
+        }
+    }
+
+    private void swichBlock(Block block, Block nextBlock, Integer indexForRecalculate) {
+        Integer currentIndex = notebook.indexOf(block);
+        Integer nextIndex = notebook.indexOf(nextBlock);
+
+        notebook.move(block, nextIndex);
+        if (nextIndex.equals(indexForRecalculate)) {
+            notebook.forEachIndexed(MainView::setTabIndexAndOrder);
+        }
+        else {
+            setTabIndexAndOrder(nextIndex, block);
+            setTabIndexAndOrder(currentIndex, nextBlock);
         }
     }
 

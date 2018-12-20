@@ -115,7 +115,7 @@ class MainViewTest {
             mainView.displayNotebook(notebook);
             block1.getEditionService().start();
 
-            pressCtrlDown(block1);
+            pressCtrlWithKey(block1, "ArrowDown");
 
             assertThat(notebook.blocks().collect(Collectors.toList())).containsSequence(block2, block1);
             assertThat(block2.getStyle().get("order")).isEqualTo("0");
@@ -133,7 +133,7 @@ class MainViewTest {
             mainView.displayNotebook(notebook);
             block3.getEditionService().start();
 
-            pressCtrlDown(block3);
+            pressCtrlWithKey(block3, "ArrowDown");
 
             assertThat(notebook.blocks().collect(Collectors.toList())).containsSequence(block3, block1, block2);
             assertThat(block3.getStyle().get("order")).isEqualTo("0");
@@ -141,10 +141,45 @@ class MainViewTest {
             assertThat(block2.getStyle().get("order")).isEqualTo("2");
         }
 
-        private void pressCtrlDown(DummyBlock block1) {
-            String arrowDown = "ArrowDown";
-            KeyDownEvent keyDownEvent = new KeyDownEvent(block1, true, arrowDown, 0, true, false, false, false, false, false);
-            ComponentUtil.fireEvent(block1, keyDownEvent);
+        @Test
+        @DisplayName("When press Ctrl+ArrowUp then move block up")
+        void WhenPressCtrlArrowUpThenMoveBlockUp() {
+            DummyBlock block1 = new DummyBlock("block 1");
+            DummyBlock block2 = new DummyBlock("block 2");
+            NoteBook notebook = new NoteBook(block1, block2);
+
+            mainView.displayNotebook(notebook);
+            block2.getEditionService().start();
+
+            pressCtrlWithKey(block1, "ArrowUp");
+
+            assertThat(notebook.blocks().collect(Collectors.toList())).containsSequence(block2, block1);
+            assertThat(block2.getStyle().get("order")).isEqualTo("0");
+            assertThat(block1.getStyle().get("order")).isEqualTo("1");
+        }
+
+        @Test
+        @DisplayName("When move first block up Then becomes last")
+        void WhenMoveFirstBlockUpThenBecomesLast() {
+            DummyBlock block1 = new DummyBlock("block 1");
+            DummyBlock block2 = new DummyBlock("block 2");
+            DummyBlock block3 = new DummyBlock("block 3");
+            NoteBook notebook = new NoteBook(block1, block2, block3);
+
+            mainView.displayNotebook(notebook);
+            block1.getEditionService().start();
+
+            pressCtrlWithKey(block1, "ArrowUp");
+
+            assertThat(notebook.blocks().collect(Collectors.toList())).containsSequence(block2, block3, block1);
+            assertThat(block2.getStyle().get("order")).isEqualTo("0");
+            assertThat(block3.getStyle().get("order")).isEqualTo("1");
+            assertThat(block1.getStyle().get("order")).isEqualTo("2");
+        }
+
+        private void pressCtrlWithKey(DummyBlock block, String key) {
+            KeyDownEvent keyDownEvent = new KeyDownEvent(block, true, key, 0, true, false, false, false, false, false);
+            ComponentUtil.fireEvent(block, keyDownEvent);
         }
 
     }

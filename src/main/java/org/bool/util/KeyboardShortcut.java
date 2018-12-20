@@ -13,6 +13,10 @@ public class KeyboardShortcut {
         return event.getModifiers().contains(KeyModifier.CONTROL) && isArrowDown(event);
     }
 
+    public static boolean isControlArrowUp(KeyDownEvent event) {
+        return event.getModifiers().contains(KeyModifier.CONTROL) && isArrowUp(event);
+    }
+
     public static boolean isArrowUp(KeyDownEvent event) {
         return event.getKey().getKeys().contains("ArrowUp");
     }
