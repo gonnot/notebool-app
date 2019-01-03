@@ -17,6 +17,7 @@ import org.apache.maven.shared.dependencies.resolve.internal.DefaultDependencyRe
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.bool.Configuration;
+import org.bool.engine.RunSession;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
@@ -33,6 +34,8 @@ import org.sonatype.aether.util.DefaultRepositorySystemSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -48,21 +51,39 @@ public class MavenDependencyBlock extends AbstractActionBlock {
 
     @Override
     protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent) {
-        try {
+        runSession
+                .evaluate(downloadDependency(input, runSession))
+                .whenComplete(inUiAccess(displayDownloadResult(outputComponent, evaluationCountComponent)))
+        ;
+    }
+
+    private static Callable<String> downloadDependency(String input, RunSession runSession) {
+        return () -> {
             Iterable<ArtifactResult> results = new MavenDependencyDownloader(Configuration.REPOSITORY_PATH).download(input.trim());
             String output = StreamSupport.stream(results.spliterator(), false)
                                          .map(result -> result.getArtifact().toString())
                                          .collect(Collectors.joining("\n"));
-            outputComponent.setText(output);
-            int count = 0;
             for (ArtifactResult artifact : results) {
-                count = runSession.addToClasspath(artifact.getArtifact().getFile().getAbsolutePath()).getCount();
+                runSession.addToClasspath(artifact.getArtifact().getFile().getAbsolutePath());
             }
-            evaluationCountComponent.setText("[ " + count + " ]:");
-        }
-        catch (Exception e) {
-            Notification.show(e.getMessage());
-        }
+            return output;
+        };
+    }
+
+    private static BiConsumer<RunSession.Result, Throwable> displayDownloadResult(Div outputComponent, Span evaluationCountComponent) {
+        return (result, throwable) -> {
+            if (throwable != null) {
+                throwable.printStackTrace();
+                Notification.show(throwable.getMessage());
+                return;
+            }
+            outputComponent.setText(result.getOutput());
+            evaluationCountComponent.setText("[ " + result.getCount() + " ]:");
+        };
+    }
+
+    private BiConsumer<RunSession.Result, Throwable> inUiAccess(BiConsumer<RunSession.Result, Throwable> command) {
+        return (result, throwable) -> getUI().ifPresent(ui -> ui.access(() -> { command.accept(result, throwable); }));
     }
 
     interface DependencyDownloader {

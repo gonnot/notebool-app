@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -25,6 +26,7 @@ import java.util.Objects;
 
 import static org.bool.engine.Block.CLICKED_CSS_CLASS;
 
+@Push
 @Route("")
 @StyleSheet("styles/bool.css")
 public class MainView extends HorizontalLayout implements HasUrlParameter<String> {

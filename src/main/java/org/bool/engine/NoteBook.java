@@ -23,7 +23,7 @@ public class NoteBook {
     private final RunSession runSession;
 
     public NoteBook() {
-        this.runSession = new RunSession();
+        this.runSession = new RunSession(RunSession.ExecutionMode.ASYNC);
     }
 
     public NoteBook(Block... blocks) {

@@ -4,21 +4,58 @@ import jdk.jshell.JShell;
 import jdk.jshell.SnippetEvent;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RunSession {
     private final JShell jShell;
+    private final ExecutionMode executionMode;
+    private static final ExecutorService executor = Executors.newCachedThreadPool();
     private int evaluationCount = 1;
 
+    public enum ExecutionMode {
+        SYNC,
+        ASYNC
+    }
+
     public RunSession() {
+        this(ExecutionMode.SYNC);
+    }
+
+    public RunSession(ExecutionMode executionMode) {
+        this.executionMode = executionMode;
         this.jShell = JShell.builder()
                             .out(System.out)
                             .err(System.err)
                             .build();
     }
 
-    public Result addToClasspath(String dependencyPath) {
+    public void addToClasspath(String dependencyPath) {
         jShell.addToClasspath(dependencyPath);
-        return new Result(null, evaluationCount++);
+    }
+
+    public CompletableFuture<Result> evaluate(Callable<String> command) {
+        if (executionMode == ExecutionMode.SYNC) {
+            try {
+                return CompletableFuture.completedFuture(new Result(command.call(), evaluationCount++));
+            }
+            catch (Exception e) {
+                return CompletableFuture.failedFuture(e);
+            }
+        }
+        else {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    return new Result(command.call(), evaluationCount++);
+                }
+                catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }, executor);
+
+        }
     }
 
     public Result evaluate(String script) {

@@ -4,6 +4,7 @@ import com.bisam.vaadin.uispec.VPanel;
 import org.apache.maven.shared.artifact.resolve.ArtifactResult;
 import org.bool.block.MavenDependencyBlock.MavenDependencyDownloader;
 import org.bool.engine.RunSession;
+import org.bool.uispec4j.UISpec4JUtil;
 import org.bool.uispec4j.VDiv;
 import org.bool.uispec4j.VSpan;
 import org.junit.jupiter.api.DisplayName;
@@ -24,23 +25,24 @@ class MavenDependencyBlockTest {
         MavenDependencyBlock dependencyBlock = new MavenDependencyBlock();
         dependencyBlock.getPersistenceService().init(runSession);
 
-        VPanel<MavenDependencyBlock> panel = new VPanel<>(dependencyBlock);
+        VPanel<MavenDependencyBlock> dependencyBlockPanel = new VPanel<>(dependencyBlock);
 
-        panel.getTextBox().setText("    joda-time:joda-time:jar:2.10\n\n\n");
+        dependencyBlockPanel.getTextBox().setText("    joda-time:joda-time:jar:2.10\n\n\n");
 
-        panel.getButton().click();
+        dependencyBlockPanel.getButton().click();
+        UISpec4JUtil.forceFlushUiAccessCommands();
 
-        VDiv resultDiv = VDiv.get(panel, "outputText");
+        VDiv resultDiv = VDiv.get(dependencyBlockPanel, "outputText");
 
         String text = resultDiv.getVaadinComponent().getText();
         assertThat(text).isEqualTo("joda-time:joda-time:jar:2.10\n" +
                                    "org.joda:joda-convert:jar:1.2");
 
+        VSpan evaluationCountForDependency = VSpan.get(dependencyBlockPanel, "evaluationCount");
+        assertThat(evaluationCountForDependency.getVaadinComponent().getText().trim()).isEqualTo("[ 1 ]:");
+
         assertThat(runSession.evaluate("new org.joda.time.DateTime(0).getYear()").getOutput())
                 .containsIgnoringCase("1970");
-
-        VSpan evaluationCount = VSpan.get(panel, "evaluationCount");
-        assertThat(evaluationCount.getVaadinComponent().getText().trim()).isEqualTo("[ 2 ]:");
     }
 
     @Test
