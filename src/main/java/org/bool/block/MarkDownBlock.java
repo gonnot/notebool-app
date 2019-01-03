@@ -21,8 +21,7 @@ public class MarkDownBlock extends Div implements Block {
     public MarkDownBlock(String markdownText) {
         this.markdownText = markdownText;
         setText(markdownText);
-        //noinspection unchecked
-        addClickListener((ComponentEventListener<ClickEvent<Component>>)clickEvent -> {
+        addClickListener((ComponentEventListener<ClickEvent<Div>>)clickEvent -> {
             if (!getEditionService().isEditing() && clickEvent.getClickCount() >= 2) {
                 getEditionService().start();
             }
