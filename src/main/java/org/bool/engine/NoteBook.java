@@ -22,12 +22,20 @@ public class NoteBook {
     private final List<Block> content = new ArrayList<>();
     private final RunSession runSession;
 
-    public NoteBook() {
-        this.runSession = new RunSession(RunSession.ExecutionMode.ASYNC);
+    public static NoteBook of(Block... blocks) {
+        return new NoteBook(blocks);
     }
 
-    public NoteBook(Block... blocks) {
-        this();
+    public static NoteBook empty() {
+        return of();
+    }
+
+    private NoteBook(RunSession runSession) {
+        this.runSession = runSession;
+    }
+
+    private NoteBook(Block... blocks) {
+        this(new RunSession());
         Stream.of(blocks).forEach(this::add);
     }
 
@@ -68,15 +76,15 @@ public class NoteBook {
         }
     }
 
-    public static NoteBook loadFromStore(final String fileName) {
-        return load(Paths.get(Configuration.JUPIFILE_PATH + fileName));
+    public static NoteBook loadFromStore(final String fileName, RunSession runSession) {
+        return load(Paths.get(Configuration.JUPIFILE_PATH + fileName), runSession);
     }
 
-    static NoteBook load(Path notebookFilePath) {
+    static NoteBook load(Path notebookFilePath, RunSession runSession) {
         try {
             String content = new String(Files.readAllBytes(notebookFilePath));
             String[] split = content.split(SEPARATOR_STRING);
-            NoteBook noteBook = new NoteBook();
+            NoteBook noteBook = new NoteBook(runSession);
             Stream.of(split)
                   .map(String::trim)
                   .filter(s -> !s.isEmpty())
@@ -106,7 +114,7 @@ public class NoteBook {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new NoteBook();
+            return empty();
         }
     }
 

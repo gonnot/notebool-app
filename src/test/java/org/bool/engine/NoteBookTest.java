@@ -19,7 +19,7 @@ class NoteBookTest {
     @Nested
     @DisplayName("Block management")
     class BlockManagement {
-        private final NoteBook noteBook = new NoteBook();
+        private final NoteBook noteBook = NoteBook.empty();
 
         @Test
         @DisplayName("Empty notebook")
@@ -31,7 +31,7 @@ class NoteBookTest {
     @Nested
     @DisplayName("Block cycles")
     class BlockCycles {
-        private final NoteBook noteBook = new NoteBook();
+        private final NoteBook noteBook = NoteBook.empty();
         private final DummyBlock first = new DummyBlock("First Block");
         private final DummyBlock second = new DummyBlock("Second Block");
 
@@ -91,7 +91,7 @@ class NoteBookTest {
             Path filePath = createdFile(tempDir,
                                         new DummyBlock("dummy block content"));
 
-            NoteBook noteBook = NoteBook.load(filePath);
+            NoteBook noteBook = NoteBook.load(filePath, new RunSession());
 
             assertContent(noteBook,
                           "DummyBlock(dummy block content)");
@@ -100,12 +100,12 @@ class NoteBookTest {
         @Test
         @DisplayName("Can load a notebook previously saved")
         void canLoadANotebookPreviouslySaved(@TempDirectory.TempDir Path tempDir) {
-            NoteBook previousNoteBook = new NoteBook();
+            NoteBook previousNoteBook = NoteBook.empty();
             previousNoteBook.add(new DummyBlock("block content"));
             Path filePath = tempDir.resolve("notebook.jupiler");
             previousNoteBook.save(filePath);
 
-            NoteBook noteBook = NoteBook.load(filePath);
+            NoteBook noteBook = NoteBook.load(filePath, new RunSession());
 
             assertContent(noteBook,
                           "DummyBlock(block content)");

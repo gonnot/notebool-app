@@ -19,6 +19,7 @@ import org.bool.block.MavenDependencyBlock;
 import org.bool.block.RunCodeBlock;
 import org.bool.engine.Block;
 import org.bool.engine.NoteBook;
+import org.bool.engine.RunSession;
 import org.bool.util.Focus;
 import org.bool.util.KeyboardShortcut;
 
@@ -93,7 +94,7 @@ public class MainView extends HorizontalLayout implements HasUrlParameter<String
     }
 
     private void loadNotebook() {
-        displayNotebook(NoteBook.loadFromStore(fileName));
+        displayNotebook(NoteBook.loadFromStore(fileName, new RunSession(RunSession.ExecutionMode.ASYNC)));
     }
 
     void displayNotebook(NoteBook newNotebook) {

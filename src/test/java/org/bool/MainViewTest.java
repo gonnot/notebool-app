@@ -28,8 +28,8 @@ class MainViewTest {
         @Test
         @DisplayName("When Load Notebook then select first block")
         void WhenLoadNotebookThenSelectFirstBlock() {
-            NoteBook notebook = new NoteBook(new DummyBlock("block 1"),
-                                             new DummyBlock("block 2"));
+            NoteBook notebook = NoteBook.of(new DummyBlock("block 1"),
+                                            new DummyBlock("block 2"));
 
             mainView.displayNotebook(notebook);
 
@@ -40,7 +40,7 @@ class MainViewTest {
         @Test
         @DisplayName("When Load Empty Notebook then select nothing")
         void WhenLoadEmptyNotebookThenSelectNothing() {
-            mainView.displayNotebook(new NoteBook());
+            mainView.displayNotebook(NoteBook.empty());
             mainView.getChildren()
                     .filter(component -> component instanceof HasStyle)
                     .forEach(component -> assertThat(((HasStyle)component).hasClassName(Block.CLICKED_CSS_CLASS)).isFalse());
@@ -57,7 +57,7 @@ class MainViewTest {
         void WhenPressEnterThenEditSelectedBox() {
             DummyBlock block = new DummyBlock("block 1");
 
-            mainView.displayNotebook(new NoteBook(block));
+            mainView.displayNotebook(NoteBook.of(block));
 
             VTextBox textBox = panel.getTextBox("block 1");
             textBox.pressKeyDown(Key.ENTER);
@@ -70,7 +70,7 @@ class MainViewTest {
         void WhenPressEscThenStopEditOfSelectedBox() {
             DummyBlock block = new DummyBlock("block 1");
 
-            mainView.displayNotebook(new NoteBook(block));
+            mainView.displayNotebook(NoteBook.of(block));
             block.getEditionService().start();
 
             VTextBox textBox = panel.getTextBox("block 1");
@@ -90,7 +90,7 @@ class MainViewTest {
             DummyBlock block1 = new DummyBlock("block 1");
             DummyBlock block2 = new DummyBlock("block 2");
 
-            mainView.displayNotebook(new NoteBook(block1, block2));
+            mainView.displayNotebook(NoteBook.of(block1, block2));
 
             UISpecAssert.assertTrue(panel.getTextBox("block 1").hasCssClassName(Block.CLICKED_CSS_CLASS));
 
@@ -110,7 +110,7 @@ class MainViewTest {
         void WhenPressCtrlArrowDownThenMoveBlockDown() {
             DummyBlock block1 = new DummyBlock("block 1");
             DummyBlock block2 = new DummyBlock("block 2");
-            NoteBook notebook = new NoteBook(block1, block2);
+            NoteBook notebook = NoteBook.of(block1, block2);
 
             mainView.displayNotebook(notebook);
             block1.getEditionService().start();
@@ -128,7 +128,7 @@ class MainViewTest {
             DummyBlock block1 = new DummyBlock("block 1");
             DummyBlock block2 = new DummyBlock("block 2");
             DummyBlock block3 = new DummyBlock("block 3");
-            NoteBook notebook = new NoteBook(block1, block2, block3);
+            NoteBook notebook = NoteBook.of(block1, block2, block3);
 
             mainView.displayNotebook(notebook);
             block3.getEditionService().start();
@@ -146,7 +146,7 @@ class MainViewTest {
         void WhenPressCtrlArrowUpThenMoveBlockUp() {
             DummyBlock block1 = new DummyBlock("block 1");
             DummyBlock block2 = new DummyBlock("block 2");
-            NoteBook notebook = new NoteBook(block1, block2);
+            NoteBook notebook = NoteBook.of(block1, block2);
 
             mainView.displayNotebook(notebook);
             block2.getEditionService().start();
@@ -164,7 +164,7 @@ class MainViewTest {
             DummyBlock block1 = new DummyBlock("block 1");
             DummyBlock block2 = new DummyBlock("block 2");
             DummyBlock block3 = new DummyBlock("block 3");
-            NoteBook notebook = new NoteBook(block1, block2, block3);
+            NoteBook notebook = NoteBook.of(block1, block2, block3);
 
             mainView.displayNotebook(notebook);
             block1.getEditionService().start();
