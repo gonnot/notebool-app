@@ -33,21 +33,21 @@ abstract class AbstractActionBlock extends Div implements Block {
 
         codeText.setValueChangeMode(ValueChangeMode.EAGER);
 
-        Button button = new Button(VaadinIcon.STEP_FORWARD.create());
-        button.getElement().setAttribute("theme", "tertiary");
-        button.addClickListener(event -> evaluate(codeText.getValue(), outputText, evaluationCountSpan));
+        Button runButton = new Button(VaadinIcon.STEP_FORWARD.create());
+        runButton.getElement().setAttribute("theme", "tertiary");
+        runButton.addClickListener(event -> evaluate(codeText.getValue(), outputText, evaluationCountSpan, runButton));
 
         //noinspection unchecked
         ComponentUtil.addListener(codeText, ClickEvent.class, (ComponentEventListener)event -> getEditionService().start());
 
         codeText.addKeyPressListener(keyPressEvent -> {
             if (KeyboardShortcut.isControlEnter(keyPressEvent)) {
-                evaluate(codeText.getValue(), outputText, evaluationCountSpan);
+                evaluate(codeText.getValue(), outputText, evaluationCountSpan, runButton);
                 getEditionService().stop();
             }
         });
 
-        add(codeText, outputText, button, evaluationCountSpan);
+        add(codeText, outputText, runButton, evaluationCountSpan);
     }
 
     AbstractActionBlock(String text) {
@@ -55,7 +55,7 @@ abstract class AbstractActionBlock extends Div implements Block {
         this.codeText.setValue(text);
     }
 
-    protected abstract void evaluate(String input, Div outputComponent, Span evaluationCountComponent);
+    protected abstract void evaluate(String input, Div outputComponent, Span evaluationCountComponent, Button runButton);
 
     @Override
     public EditionService getEditionService() {

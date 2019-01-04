@@ -1,6 +1,7 @@
 package org.bool.block;
 
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import org.bool.engine.RunSession;
@@ -17,7 +18,7 @@ public class RunCodeBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent) {
+    protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent, Button runButton) {
         if (runSession != null) {
             RunSession.Result evaluationResult = runSession.evaluate(input);
             outputComponent.setText(evaluationResult.getOutput());

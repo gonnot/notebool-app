@@ -1,7 +1,10 @@
 package org.bool.block;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -50,10 +53,13 @@ public class MavenDependencyBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent) {
+    protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent, Button runButton) {
+        Component icon = runButton.getIcon();
+        runButton.setIcon(new Image("/loading.gif", "loading..."));
         runSession
                 .evaluate(downloadDependency(input, runSession))
                 .whenComplete(inUiAccess(displayDownloadResult(outputComponent, evaluationCountComponent)))
+                .whenComplete(inUiAccess((result, throwable) -> runButton.setIcon(icon)))
         ;
     }
 
