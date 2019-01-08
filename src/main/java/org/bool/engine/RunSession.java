@@ -67,7 +67,14 @@ public class RunSession {
         StringBuilder outputResult = new StringBuilder();
 
         SnippetEvent snippetEvent = snippetEventList.get(0);
-        outputResult.append(snippetEvent.value()).append("\n");
+        String value = snippetEvent.value();
+        if (value == null && snippetEvent.status().isActive()) {
+            outputResult.append("Step Ok");
+        }
+        else {
+
+            outputResult.append(value).append("\n");
+        }
         Stream<Diag> diagnostics = jShell.diagnostics(snippetEvent.snippet());
 
         Optional<Diag> first = diagnostics.findFirst();
@@ -98,9 +105,6 @@ public class RunSession {
         }
 
         public String getOutput() {
-            if (output == null) {
-                return errorMessage;
-            }
             return output;
         }
 
@@ -108,11 +112,11 @@ public class RunSession {
             return count;
         }
 
-        boolean hasError() {
+        public boolean hasError() {
             return errorMessage != null;
         }
 
-        String getErrorMessage() {
+        public String getErrorMessage() {
             return errorMessage;
         }
     }

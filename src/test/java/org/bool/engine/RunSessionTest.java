@@ -57,11 +57,8 @@ class RunSessionTest {
         RunSession.Result result = runSession.evaluate("public class MyClass{" +
                                                        "}");
 
-        assertThat(result.getOutput()).isEqualTo(null);
-        assertThat(result.hasError()).isEqualTo(true);
-        assertThat(result.getErrorMessage()).isEqualTo("cannot find symbol\n" +
-                                                       "  symbol:   method unknownMethod()\n" +
-                                                       "  location: class java.lang.Integer");
+        assertThat(result.getOutput()).isEqualTo("Step Ok");
+        assertThat(result.hasError()).isEqualTo(false);
     }
 
     @Test

@@ -21,7 +21,12 @@ public class RunCodeBlock extends AbstractActionBlock {
     protected void evaluate(String input, Div outputComponent, Span evaluationCountComponent, Button runButton) {
         if (runSession != null) {
             RunSession.Result evaluationResult = runSession.evaluate(input);
-            outputComponent.setText(evaluationResult.getOutput());
+            if (evaluationResult.hasError()) {
+                outputComponent.setText(evaluationResult.getErrorMessage());
+            }
+            else {
+                outputComponent.setText(evaluationResult.getOutput());
+            }
             evaluationCountComponent.setText(" [ " + evaluationResult.getCount() + " ]:");
         }
         else {

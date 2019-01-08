@@ -50,7 +50,6 @@ public Block(String data,String previousHash ) {
 }
 ################################################org.bool.block.RunCodeBlock
 Block genesisBlock = new Block("Hi im the first block", "0");
-	
 ################################################org.bool.block.RunCodeBlock
 "Hash for block 1 : " + genesisBlock.hash;
 ################################################org.bool.block.RunCodeBlock
