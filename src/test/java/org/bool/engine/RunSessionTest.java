@@ -51,6 +51,20 @@ class RunSessionTest {
     }
 
     @Test
+    void evaluate_class_creation_operation() {
+        RunSession runSession = new RunSession();
+
+        RunSession.Result result = runSession.evaluate("public class MyClass{" +
+                                                       "}");
+
+        assertThat(result.getOutput()).isEqualTo(null);
+        assertThat(result.hasError()).isEqualTo(true);
+        assertThat(result.getErrorMessage()).isEqualTo("cannot find symbol\n" +
+                                                       "  symbol:   method unknownMethod()\n" +
+                                                       "  location: class java.lang.Integer");
+    }
+
+    @Test
     void results_are_indexed() {
         RunSession runSession = new RunSession();
 
