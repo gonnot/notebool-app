@@ -1,13 +1,17 @@
 package org.bool.engine;
 
+import jdk.jshell.Diag;
 import jdk.jshell.JShell;
 import jdk.jshell.SnippetEvent;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 public class RunSession {
     private final JShell jShell;
@@ -39,7 +43,7 @@ public class RunSession {
     public CompletableFuture<Result> evaluate(Callable<String> command) {
         if (executionMode == ExecutionMode.SYNC) {
             try {
-                return CompletableFuture.completedFuture(new Result(command.call(), evaluationCount++));
+                return CompletableFuture.completedFuture(Result.ok(command.call(), evaluationCount++));
             }
             catch (Exception e) {
                 return CompletableFuture.failedFuture(e);
@@ -48,7 +52,7 @@ public class RunSession {
         else {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return new Result(command.call(), evaluationCount++);
+                    return Result.ok(command.call(), evaluationCount++);
                 }
                 catch (Exception e) {
                     throw new RuntimeException(e);
@@ -59,29 +63,57 @@ public class RunSession {
     }
 
     public Result evaluate(String script) {
-        List<SnippetEvent> eval = jShell.eval(script);
-        StringBuilder builder = new StringBuilder();
-        for (SnippetEvent snippetEvent : eval) {
-            builder.append(snippetEvent.value()).append("\n");
+        List<SnippetEvent> snippetEventList = jShell.eval(script);
+        StringBuilder outputResult = new StringBuilder();
+
+        SnippetEvent snippetEvent = snippetEventList.get(0);
+        outputResult.append(snippetEvent.value()).append("\n");
+        Stream<Diag> diagnostics = jShell.diagnostics(snippetEvent.snippet());
+
+        Optional<Diag> first = diagnostics.findFirst();
+        if (first.isPresent()) {
+            String errorMessageResult = first.get().getMessage(Locale.FRENCH).trim();
+            return Result.failing(errorMessageResult, evaluationCount++);
         }
-        return new Result(builder.toString(), evaluationCount++);
+        return Result.ok(outputResult.toString(), evaluationCount++);
     }
 
     public static class Result {
         private final String output;
+        private final String errorMessage;
         private int count;
 
-        Result(String output, int count) {
+        static Result ok(String output, int count) {
+            return new Result(output, count, null);
+        }
+
+        static Result failing(String errorMessage, int count) {
+            return new Result(null, count, errorMessage);
+        }
+
+        private Result(String output, int count, String errorMessage) {
             this.output = output;
             this.count = count;
+            this.errorMessage = errorMessage;
         }
 
         public String getOutput() {
+            if (output == null) {
+                return errorMessage;
+            }
             return output;
         }
 
         public int getCount() {
             return count;
+        }
+
+        boolean hasError() {
+            return errorMessage != null;
+        }
+
+        String getErrorMessage() {
+            return errorMessage;
         }
     }
 }

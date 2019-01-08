@@ -1,0 +1,59 @@
+################################################org.bool.block.RunCodeBlock
+public class StringUtil {
+
+	public String applySha256(String input){		
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");	        
+			//Applies sha256 to our input, 
+			byte[] hash = digest.digest(input.getBytes("UTF-8"));	        
+			StringBuffer hexString = new StringBuffer(); 
+			for (int i = 0; i < hash.length; i++) {
+				String hex = Integer.toHexString(0xff & hash[i]);
+				if(hex.length() == 1) hexString.append('0');
+				hexString.append(hex);
+			}
+			return hexString.toString();
+		}
+		catch(Exception e) {
+			throw new RuntimeException(e);
+		}
+	}	
+}
+################################################org.bool.block.RunCodeBlock
+import java.security.MessageDigest;
+################################################org.bool.block.RunCodeBlock
+import java.util.Date;
+################################################org.bool.block.RunCodeBlock
+public class Block {
+
+	public String hash;
+	public String previousHash;
+	private String data; 
+	private long timeStamp; 
+
+public String calculateHash() {
+	String calculatedhash = new StringUtil().applySha256( 
+			previousHash +
+			Long.toString(timeStamp) +
+			data 
+			);
+	return calculatedhash;
+}
+
+public Block(String data,String previousHash ) {
+		this.data = data;
+		this.previousHash = previousHash;
+		this.timeStamp = new Date().getTime();
+		
+	}
+}
+################################################org.bool.block.RunCodeBlock
+Block genesisBlock = new Block("Hi im the first block", "0");
+		System.out.println("Hash for block 1 : " + genesisBlock.hash);
+		
+		Block secondBlock = new Block("Yo im the second block",genesisBlock.hash);
+		System.out.println("Hash for block 2 : " + secondBlock.hash);
+		
+		Block thirdBlock = new Block("Hey im the third block",secondBlock.hash);
+		System.out.println("Hash for block 3 : " + thirdBlock.hash);
+################################################END
