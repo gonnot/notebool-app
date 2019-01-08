@@ -49,15 +49,33 @@ public Block(String data,String previousHash ) {
 	}
 }
 ################################################org.bool.block.RunCodeBlock
-Block genesisBlock = new Block("Hi im the first block", "0");
+import java.util.ArrayList;
+
 ################################################org.bool.block.RunCodeBlock
-"Hash for block 1 : " + genesisBlock.hash;
+public ArrayList<Block> blockchain = new ArrayList<Block>(); 
 ################################################org.bool.block.RunCodeBlock
-Block secondBlock = new Block("Yo im the second block",genesisBlock.hash);
+blockchain.add(new Block("Hi im the first block", "0"));		
+blockchain.add(new Block("Yo im the second block",blockchain.get(blockchain.size()-1).hash)); 
+blockchain.add(new Block("Hey im the third block",blockchain.get(blockchain.size()-1).hash));
+################################################org.bool.block.MavenDependencyBlock
+com.google.code.gson:gson:jar:2.3.1
 ################################################org.bool.block.RunCodeBlock
-"Hash for block 2 : " + secondBlock.hash;
+import com.google.gson.GsonBuilder;
 ################################################org.bool.block.RunCodeBlock
-Block thirdBlock = new Block("Hey im the third block",secondBlock.hash);
+String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(blockchain);
 ################################################org.bool.block.RunCodeBlock
-"Hash for block 3 : " + thirdBlock.hash;
+blockchainJson
+################################################org.bool.block.RunCodeBlock
+for(int i=1; i < blockchain.size(); i++) {
+		currentBlock = blockchain.get(i);
+		previousBlock = blockchain.get(i-1);
+		//compare registered hash and calculated hash:
+		if(!blockchain.get(i).hash.equals( blockchain.get(i-1).calculateHash()) ){
+			"Current Hashes not equal";			
+		}
+
+		if(!blockchain.get(i-1).hash.equals(blockchain.get(i).previousHash) ) {
+			"Previous Hashes not equal";
+		}
+	}
 ################################################END
