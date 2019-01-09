@@ -9,6 +9,10 @@ public class KeyboardShortcut {
         return event.getModifiers().contains(KeyModifier.CONTROL) && event.getKey().matches("\n");
     }
 
+    public static boolean isControlSpace(KeyPressEvent event) {
+        return event.getModifiers().contains(KeyModifier.CONTROL) && event.getKey().matches(" ");
+    }
+
     public static boolean isControlArrowDown(KeyDownEvent event) {
         return event.getModifiers().contains(KeyModifier.CONTROL) && isArrowDown(event);
     }

@@ -3,10 +3,9 @@ package org.bool.engine;
 import jdk.jshell.Diag;
 import jdk.jshell.JShell;
 import jdk.jshell.SnippetEvent;
+import jdk.jshell.SourceCodeAnalysis;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -83,6 +82,23 @@ public class RunSession {
             return Result.failing(errorMessageResult, evaluationCount++);
         }
         return Result.ok(outputResult.toString(), evaluationCount++);
+    }
+
+    public Set<String> autoCompletion(String script, int[] tab) {
+        SourceCodeAnalysis sourceCodeAnalysis = jShell.sourceCodeAnalysis();
+
+        List<SourceCodeAnalysis.Suggestion> suggestions = sourceCodeAnalysis.completionSuggestions(script, script.length(), tab);
+        Set<String> listCompletion = new HashSet<>();
+        suggestions.forEach(suggestion -> listCompletion.add(suggestion.continuation()));
+        return listCompletion;
+    }
+
+    public Set<String> documentation(String script) {
+        Set<String> documentationList = new HashSet<>();
+        SourceCodeAnalysis sourceCodeAnalysis = jShell.sourceCodeAnalysis();
+        List<SourceCodeAnalysis.Documentation> documentations = sourceCodeAnalysis.documentation(script, script.length(), false);
+        documentations.iterator().forEachRemaining(element -> documentationList.add(element.signature()));
+        return documentationList;
     }
 
     public static class Result {

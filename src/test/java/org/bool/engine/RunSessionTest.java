@@ -2,6 +2,8 @@ package org.bool.engine;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RunSessionTest {
@@ -51,11 +53,34 @@ class RunSessionTest {
     }
 
     @Test
+    void evaluate_completion_operation() {
+        RunSession runSession = new RunSession();
+
+        int[] pos = new int[1];
+
+        Set<String> completion = runSession.autoCompletion("new Integer(7).w", pos);
+
+        assertThat(completion.size()).isEqualTo(1);
+        assertThat(completion).containsAnyOf("wait(");
+    }
+
+    @Test
+    void evaluate_method_parameters_operation() {
+        RunSession runSession = new RunSession();
+
+        Set<String> documentation = runSession.documentation("new Integer(7).wait(");
+        assertThat(documentation.size()).isEqualTo(3);
+        assertThat(documentation).containsAnyOf("void Object.wait() throws InterruptedException",
+                                                "void Object.wait(long timeoutMillis, int nanos) throws InterruptedException",
+                                                "void Object.wait(long timeoutMillis) throws InterruptedException");
+
+    }
+
+    @Test
     void evaluate_class_creation_operation() {
         RunSession runSession = new RunSession();
 
-        RunSession.Result result = runSession.evaluate("public class MyClass{" +
-                                                       "}");
+        RunSession.Result result = runSession.evaluate("public class MyClass{}");
 
         assertThat(result.getOutput()).isEqualTo("Step Ok");
         assertThat(result.hasError()).isEqualTo(false);

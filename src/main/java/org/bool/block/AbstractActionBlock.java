@@ -45,6 +45,9 @@ abstract class AbstractActionBlock extends Div implements Block {
                 evaluate(codeText.getValue(), outputText, evaluationCountSpan, runButton);
                 getEditionService().stop();
             }
+            else if (KeyboardShortcut.isControlSpace(keyPressEvent)) {
+                completion(codeText.getValue(), outputText);
+            }
         });
 
         add(codeText, outputText, runButton, evaluationCountSpan);
@@ -56,6 +59,8 @@ abstract class AbstractActionBlock extends Div implements Block {
     }
 
     protected abstract void evaluate(String input, Div outputComponent, Span evaluationCountComponent, Button runButton);
+
+    protected abstract void completion(String input, Div outputComponent);
 
     @Override
     public EditionService getEditionService() {

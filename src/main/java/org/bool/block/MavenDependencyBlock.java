@@ -63,6 +63,11 @@ public class MavenDependencyBlock extends AbstractActionBlock {
         ;
     }
 
+    @Override
+    protected void completion(String input, Div outputComponent) {
+
+    }
+
     private static Callable<String> downloadDependency(String input, RunSession runSession) {
         return () -> {
             Iterable<ArtifactResult> results = new MavenDependencyDownloader(Configuration.REPOSITORY_PATH).download(input.trim());

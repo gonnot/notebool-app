@@ -1,3 +1,5 @@
+################################################org.bool.block.MarkDownBlock
+https://medium.com/programmers-blockchain/create-simple-blockchain-java-tutorial-from-scratch-6eeed3cb03fa
 ################################################org.bool.block.RunCodeBlock
 public class StringUtil {
 
@@ -50,9 +52,8 @@ public Block(String data,String previousHash ) {
 }
 ################################################org.bool.block.RunCodeBlock
 import java.util.ArrayList;
-
 ################################################org.bool.block.RunCodeBlock
-public ArrayList<Block> blockchain = new ArrayList<Block>(); 
+public ArrayList<Block> blockchain = new ArrayList<Block>();
 ################################################org.bool.block.RunCodeBlock
 blockchain.add(new Block("Hi im the first block", "0"));		
 blockchain.add(new Block("Yo im the second block",blockchain.get(blockchain.size()-1).hash)); 
