@@ -62,6 +62,7 @@ class RunSessionTest {
 
         assertThat(completion.size()).isEqualTo(1);
         assertThat(completion).containsAnyOf("wait(");
+        assertThat(pos[0]).isEqualTo("new Integer(7).".length());
     }
 
     @Test

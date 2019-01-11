@@ -34,9 +34,7 @@ import org.sonatype.aether.impl.internal.DefaultRemoteRepositoryManager;
 import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManager;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -64,8 +62,8 @@ public class MavenDependencyBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void completion(String input, Div outputComponent) {
-
+    protected Collection<String> completion(String input) {
+        return Collections.emptyList();
     }
 
     private static Callable<String> downloadDependency(String input, RunSession runSession) {

@@ -26,8 +26,8 @@ com.google.code.gson:gson:jar:2.8.5
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 ################################################org.bool.block.RunCodeBlock
-final GsonBuilder builder = new GsonBuilder();
-final Gson gson = builder.create();
+GsonBuilder builder = new GsonBuilder();
+Gson gson = builder.create();
  
 System.out.println("1 -> " + gson.toJson(1));
 System.out.println("abcde -> " + gson.toJson("abcde"));
@@ -65,10 +65,8 @@ return "Coordonnees [abscisse=" + this.abscisse + ", ordonnee=" + this.ordonnee 
 }
 }
 ################################################org.bool.block.RunCodeBlock
- 
 final Coordonnees coordonnees = new Coordonnees(120, 450);
  
 final String json = gson.toJson(coordonnees);
 System.out.println("Resultat = " + json);
-
 ################################################END

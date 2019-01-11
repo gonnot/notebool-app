@@ -8,12 +8,15 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.bool.engine.Block;
 import org.bool.engine.RunSession;
 import org.bool.util.Focus;
 import org.bool.util.KeyboardShortcut;
+
+import java.util.Collection;
 
 @HtmlImport("styles/block/AbstractActionBlock.html")
 abstract class AbstractActionBlock extends Div implements Block {
@@ -27,15 +30,21 @@ abstract class AbstractActionBlock extends Div implements Block {
 
         Span evaluationCountSpan = new Span("[ ]:");
         evaluationCountSpan.setId("evaluationCount");
+        evaluationCountSpan.addClassName("evaluationCount");
 
         Div outputText = new Div();
         outputText.setId("outputText");
+        outputText.addClassName("outputText");
 
         codeText.setValueChangeMode(ValueChangeMode.EAGER);
 
         Button runButton = new Button(VaadinIcon.STEP_FORWARD.create());
         runButton.getElement().setAttribute("theme", "tertiary");
         runButton.addClickListener(event -> evaluate(codeText.getValue(), outputText, evaluationCountSpan, runButton));
+
+        ListBox<String> completionListBox = new ListBox<>();
+        Div completionContainer = new Div(completionListBox);
+        completionContainer.addClassNames("completion", "completion-hidden");
 
         //noinspection unchecked
         ComponentUtil.addListener(codeText, ClickEvent.class, (ComponentEventListener)event -> getEditionService().start());
@@ -46,11 +55,19 @@ abstract class AbstractActionBlock extends Div implements Block {
                 getEditionService().stop();
             }
             else if (KeyboardShortcut.isControlSpace(keyPressEvent)) {
-                completion(codeText.getValue(), outputText);
+                completionListBox.clear();
+                Collection<String> completions = completion(codeText.getValue());
+                if (completions.isEmpty()) {
+                    completionContainer.addClassName("completion-hidden");
+                }
+                else {
+                    completionListBox.setItems(completions);
+                    completionContainer.removeClassName("completion-hidden");
+                }
             }
         });
 
-        add(codeText, outputText, runButton, evaluationCountSpan);
+        add(codeText, completionContainer, outputText, runButton, evaluationCountSpan);
     }
 
     AbstractActionBlock(String text) {
@@ -60,7 +77,7 @@ abstract class AbstractActionBlock extends Div implements Block {
 
     protected abstract void evaluate(String input, Div outputComponent, Span evaluationCountComponent, Button runButton);
 
-    protected abstract void completion(String input, Div outputComponent);
+    protected abstract Collection<String> completion(String input);
 
     @Override
     public EditionService getEditionService() {

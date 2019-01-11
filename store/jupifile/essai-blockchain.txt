@@ -1,3 +1,5 @@
+################################################org.bool.block.RunCodeBlock
+
 ################################################org.bool.block.MarkDownBlock
 https://medium.com/programmers-blockchain/create-simple-blockchain-java-tutorial-from-scratch-6eeed3cb03fa
 ################################################org.bool.block.RunCodeBlock
@@ -23,8 +25,8 @@ public class StringUtil {
 }
 ################################################org.bool.block.RunCodeBlock
 import java.security.MessageDigest;
-################################################org.bool.block.RunCodeBlock
 import java.util.Date;
+import java.util.ArrayList;
 ################################################org.bool.block.RunCodeBlock
 public class Block {
 
@@ -51,8 +53,6 @@ public Block(String data,String previousHash ) {
 	}
 }
 ################################################org.bool.block.RunCodeBlock
-import java.util.ArrayList;
-################################################org.bool.block.RunCodeBlock
 public ArrayList<Block> blockchain = new ArrayList<Block>();
 ################################################org.bool.block.RunCodeBlock
 blockchain.add(new Block("Hi im the first block", "0"));		
@@ -67,16 +67,27 @@ String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(bl
 ################################################org.bool.block.RunCodeBlock
 blockchainJson
 ################################################org.bool.block.RunCodeBlock
-for(int i=1; i < blockchain.size(); i++) {
+public Boolean isChainValid() {
+	Block currentBlock; 
+	Block previousBlock;
+	
+	//loop through blockchain to check hashes:
+	for(int i=1; i < blockchain.size(); i++) {
 		currentBlock = blockchain.get(i);
 		previousBlock = blockchain.get(i-1);
 		//compare registered hash and calculated hash:
-		if(!blockchain.get(i).hash.equals( blockchain.get(i-1).calculateHash()) ){
-			"Current Hashes not equal";			
+		if(!currentBlock.hash.equals(currentBlock.calculateHash()) ){
+			System.out.println("Current Hashes not equal");			
+			return false;
 		}
-
-		if(!blockchain.get(i-1).hash.equals(blockchain.get(i).previousHash) ) {
-			"Previous Hashes not equal";
+		//compare previous hash and registered previous hash
+		if(!previousBlock.hash.equals(currentBlock.previousHash) ) {
+			System.out.println("Previous Hashes not equal");
+			return false;
 		}
 	}
+	return true;
+}
+################################################org.bool.block.RunCodeBlock
+isChainValid()
 ################################################END

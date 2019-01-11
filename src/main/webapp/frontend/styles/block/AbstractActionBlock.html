@@ -12,7 +12,7 @@
             left: 0;
         }
 
-        .action-block span {
+        .action-block .evaluationCount {
             color: lightgray;
             position: absolute;
             top: 7px;
@@ -23,11 +23,11 @@
             visibility: visible;
         }
 
-        .action-block.clicked span {
+        .action-block.clicked .evaluationCount {
             color: rgb(48, 127, 193);
         }
 
-        .action-block div {
+        .action-block .outputText {
             color: darkgray;
             font-family: monospace;
             white-space: pre;
@@ -42,7 +42,7 @@
 
         }
 
-        .action-block div:after {
+        .action-block .outputText:after {
             content: "";
             text-align: right;
             position: absolute;
@@ -51,6 +51,18 @@
             width: 70%;
             height: 1.2em;
             background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+        }
+
+        .action-block div.completion {
+            position: absolute;
+            z-index: 42;
+            background-color: white;
+            border: 1px red solid;
+            right: 0;
+        }
+
+        .action-block div.completion-hidden {
+            display: none;
         }
     </style>
 

@@ -1,15 +1,33 @@
 package org.bool.block;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import org.bool.engine.RunSession;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 @Tag("bool-code")
+@JavaScript("http://www.mycdn.com/monaco-editor/min/vs/loader.js")
 public class RunCodeBlock extends AbstractActionBlock {
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        //language=JavaScript
+        convertHighlight(attachEvent
+                                 .getUI());
+
+    }
+
+    private void convertHighlight(UI ui) {
+        String expression = "monaco.editor.create(document.getElementById(\"outputText\"),{value:text,language:\"java\"});";
+        ui.getPage().executeJavaScript(expression, getElement());
+    }
 
     public RunCodeBlock() {
         super();
@@ -37,20 +55,17 @@ public class RunCodeBlock extends AbstractActionBlock {
     }
 
     @Override
-    protected void completion(String input, Div outputComponent) {
-
+    protected Collection<String> completion(String input) {
+        Set<String> results = Collections.emptySet();
         if (runSession != null) {
-            StringBuilder output = new StringBuilder();
-            int[] position = new int[1];
-            Set<String> list;
             if (input.endsWith("(")) {
-                list = runSession.documentation(input);
+                results = runSession.documentation(input);
             }
             else {
-                list = runSession.autoCompletion(input, position);
+                int[] position = new int[1];
+                results = runSession.autoCompletion(input, position);
             }
-            list.iterator().forEachRemaining(str -> output.append(str).append("\n"));
-            outputComponent.setText(output.toString());
         }
+        return results;
     }
 }
