@@ -19,8 +19,10 @@ import org.bool.util.KeyboardShortcut;
 import java.util.Collection;
 
 @HtmlImport("styles/block/AbstractActionBlock.html")
+//@JavaScript("javascript/block/AbstractActionBlock.js")
 abstract class AbstractActionBlock extends Div implements Block {
     private static final String CSS_BLOCK_CLASS_NAME = "action-block";
+    protected static final String CSS_ERROR_CLASS = "action-error";
     private final TextArea codeText = new TextArea();
     private final InternalEditionService internalEditionMode = new InternalEditionService();
     RunSession runSession;
@@ -43,8 +45,21 @@ abstract class AbstractActionBlock extends Div implements Block {
         runButton.addClickListener(event -> evaluate(codeText.getValue(), outputText, evaluationCountSpan, runButton));
 
         ListBox<String> completionListBox = new ListBox<>();
+
         Div completionContainer = new Div(completionListBox);
         completionContainer.addClassNames("completion", "completion-hidden");
+
+/*
+        completionListBox.addValueChangeListener(event -> {
+            String value = event.getValue();
+            if (value != null) {
+                codeText.setValue(codeText.getValue() + value);
+                completionContainer.addClassName("completion-hidden");
+            }
+            Focus.requestFocus(codeText);
+            getUI().ifPresent(ui -> ui.getPage().executeJavaScript("setCaretPosition($0,$1)", codeText.getElement(), 2));
+        });
+*/
 
         //noinspection unchecked
         ComponentUtil.addListener(codeText, ClickEvent.class, (ComponentEventListener)event -> getEditionService().start());
@@ -62,6 +77,7 @@ abstract class AbstractActionBlock extends Div implements Block {
                 }
                 else {
                     completionListBox.setItems(completions);
+//                    Focus.requestFocus(completionListBox);
                     completionContainer.removeClassName("completion-hidden");
                 }
             }

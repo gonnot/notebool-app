@@ -4,7 +4,6 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import org.bool.engine.RunSession;
@@ -14,8 +13,9 @@ import java.util.Collections;
 import java.util.Set;
 
 @Tag("bool-code")
-@JavaScript("http://www.mycdn.com/monaco-editor/min/vs/loader.js")
+//@JavaScript("http://www.mycdn.com/monaco-editor/min/vs/loader.js")
 public class RunCodeBlock extends AbstractActionBlock {
+
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         //language=JavaScript
@@ -25,8 +25,8 @@ public class RunCodeBlock extends AbstractActionBlock {
     }
 
     private void convertHighlight(UI ui) {
-        String expression = "monaco.editor.create(document.getElementById(\"outputText\"),{value:text,language:\"java\"});";
-        ui.getPage().executeJavaScript(expression, getElement());
+//        String expression = "monaco.editor.create(document.getElementById(\"outputText\"),{value:text,language:\"java\"});";
+//        ui.getPage().executeJavaScript(expression, getElement());
     }
 
     public RunCodeBlock() {
@@ -43,8 +43,10 @@ public class RunCodeBlock extends AbstractActionBlock {
             RunSession.Result evaluationResult = runSession.evaluate(input);
             if (evaluationResult.hasError()) {
                 outputComponent.setText(evaluationResult.getErrorMessage());
+                outputComponent.addClassName(CSS_ERROR_CLASS);
             }
             else {
+                outputComponent.removeClassName(CSS_ERROR_CLASS);
                 outputComponent.setText(evaluationResult.getOutput());
             }
             evaluationCountComponent.setText(" [ " + evaluationResult.getCount() + " ]:");
