@@ -1,0 +1,35 @@
+<!-- saved from url=(0103)https://polygit.org/polymer+%5Ev2.6.0/webcomponentsjs+%5Ev1.3.0/components/polymer/polymer-element.html -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <link rel="import" href="https://polygit.org/polymer+%5Ev2.6.0/webcomponentsjs+%5Ev1.3.0/components/polymer/lib/mixins/element-mixin.html">
+    <!-- import html-tag to export html -->
+    <link rel="import" href="https://polygit.org/polymer+%5Ev2.6.0/webcomponentsjs+%5Ev1.3.0/components/polymer/lib/utils/html-tag.html">
+    <script>
+        (function () {
+            'use strict';
+
+            /**
+             * Base class that provides the core API for Polymer's meta-programming
+             * features including template stamping, data-binding, attribute deserialization,
+             * and property change observation.
+             *
+             * @customElement
+             * @memberof Polymer
+             * @constructor
+             * @implements {Polymer_ElementMixin}
+             * @extends {HTMLElement}
+             * @appliesMixin Polymer.ElementMixin
+             * @summary Custom element base class that provides the core API for Polymer's
+             *   key meta-programming features including template stamping, data-binding,
+             *   attribute deserialization, and property change observation
+             */
+            Polymer.Element = Polymer.ElementMixin(HTMLElement);
+
+            // NOTE: this is here for modulizer to export `html` for the module version of this file
+            Polymer.html = Polymer.html;
+        })();
+    </script>
+</head>
+<body></body>
+</html>

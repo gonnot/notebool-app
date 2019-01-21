@@ -1,0 +1,42 @@
+<!--<link rel="import"  href="https://polygit.org/polymer+^v2.6.0/webcomponentsjs+^v1.3.0/components/polymer/polymer-element.html">-->
+<link rel="import" href="polymer-element.html">
+<!--
+    Documentation
+        https://polymer-library.polymer-project.org/2.0/docs/devguide/properties
+        https://polymer-library.polymer-project.org/2.0/docs/devguide/data-binding.html#two-way-native
+        https://polymer-library.polymer-project.org/2.0/docs/apps/case-study
+-->
+<dom-module id="jupiler-textarea">
+    <template>
+        <div>
+            <button on-click="handleClick">Say hello</button>
+            <textarea value="{{myvalue::input}}"></textarea>
+            <b><span>[[myvalue]]</span></b>
+        </div>
+    </template>
+
+    <script>
+        class JupilerTextArea extends Polymer.Element {
+            static get is() {
+                return 'jupiler-textarea'
+            }
+
+            static get properties() {
+                return {
+                    myvalue: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true
+                    }
+                };
+            }
+
+            handleClick() {
+                console.log('clicked on js side. previous value' + this.myvalue);
+                this.myvalue = "updated via JS code"
+            }
+        }
+
+        customElements.define(JupilerTextArea.is, JupilerTextArea);
+    </script>
+</dom-module>
