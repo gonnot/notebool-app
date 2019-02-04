@@ -3,13 +3,14 @@ package org.bool.util;
 import com.vaadin.flow.component.KeyDownEvent;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.KeyPressEvent;
+import com.vaadin.flow.component.internal.KeyboardEvent;
 
 public class KeyboardShortcut {
     public static boolean isControlEnter(KeyPressEvent event) {
         return event.getModifiers().contains(KeyModifier.CONTROL) && event.getKey().matches("\n");
     }
 
-    public static boolean isControlSpace(KeyPressEvent event) {
+    public static boolean isControlSpace(KeyboardEvent event) {
         return event.getModifiers().contains(KeyModifier.CONTROL) && event.getKey().matches(" ");
     }
 

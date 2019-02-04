@@ -1,0 +1,149 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<dom-module id="jupiler-textarea">
+    <!--https://github.com/component/textarea-caret-position-->
+    <template>
+        <style>
+            #divContainer {
+                overflow: hidden;
+                word-wrap: break-word;
+                white-space: pre-wrap;
+                width: 500px;
+                height: 0px;
+                padding: 2px;
+                line-height: 13px;
+                font-size: 13px;
+            }
+
+            #content {
+                resize: none;
+                overflow: hidden;
+                width: 500px;
+                min-height: 50px;
+                padding: 2px;
+                line-height: 13px;
+                font-size: 13px;
+            }
+        </style>
+        <div>
+            <div id="divContainer">
+            </div>
+
+            <button on-click="handleClick">Say hello</button>
+            <!--
+
+            -->
+            <textarea id="content" on-keyup="handleKeyPress" value="{{myvalue::input}}"></textarea>
+            <b><span>[[myvalue]]</span></b>
+        </div>
+    </template>
+
+    <script>
+        class JupilerTextArea extends Polymer.Element {
+            static get is() {
+                return 'jupiler-textarea'
+            }
+
+            static get properties() {
+                return {
+                    myvalue: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true
+                    },
+                    cursorPosition: {
+                        type: String,
+                        notify: false,
+                        readOnly: true,
+                        computed: 'computeCursorPosition()'
+                    }
+                };
+            }
+
+            appendTextAtCursorPosition(textToAppend) {
+                const contentField = this.$.content;
+
+                const startPos = contentField.selectionStart;
+                const endPos = contentField.selectionEnd;
+
+                contentField.value =
+                    contentField.value.substring(0, startPos)
+                    + textToAppend
+                    + contentField.value.substring(endPos, contentField.value.length);
+
+                var pos = startPos + textToAppend.length;
+                contentField.setSelectionRange(pos, pos);
+
+                JupilerTextArea.triggerInputEvent(contentField);
+            }
+
+            computeCursorPosition() {
+                return "" + this.$.content.selectionStart
+            }
+
+
+            static triggerInputEvent(contentField) {
+                const e = document.createEvent('HTMLEvents');
+                e.initEvent('input', false, true);
+                contentField.dispatchEvent(e);
+            }
+
+            handleClick(event) {
+                console.log('clicked on js side. previous value' + this.myvalue + " event " + event);
+                this.myvalue = "updated via JS code";
+                event.jupyler = {
+                    value: "from JS code " + this.myvalue,
+                };
+            }
+
+            handleKeyPress(event) {
+                console.log("########### keypress " + event.code);
+                event.jupyler = {
+                    cursorPosition: this.$.content.selectionStart,
+                };
+
+                // http://labs.qnimate.com/auto-resizing-textarea/textarearesize2.html
+                this.$.divContainer.innerHTML = this.$.content.value;
+                this.$.content.style.height = (this.$.divContainer.scrollHeight + 10) + "px";
+
+                /*
+                var $el = this.$.content;
+
+                const offset = 0; // offsetHeight (visible / scrollHeight (viewport)
+                // const offset = $el.innerHeight() - $el.height(); // offsetHeight (visible / scrollHeight (viewport)
+
+                let displayedHeight = $el.offsetHeight;
+                let fullHeight = $el.scrollHeight;
+                if (displayedHeight < fullHeight) {
+                    //Grow the field if scroll height is smaller
+                    console.log("BOBO visible:" + displayedHeight + $el.clientHeight + "px");
+                    $el.style.height = fullHeight + "px";
+                } else {
+                    //Shrink the field and then re-set it to the scroll height in case it needs to shrink
+                    var style = window.getComputedStyle ? getComputedStyle($el, null) : $el.currentStyle;
+
+
+                    console.log("BOBOMinus visible:" + displayedHeight +
+                        " / client:" + $el.clientHeight +
+                        " / window.getComputedStyle:" + window.getComputedStyle +
+                        " / comp.height =" + style.height);
+
+                    /!*
+                                        $el.height(1);
+                                        $el.height(this.scrollHeight - offset);
+                    *!/
+                    $el.style.height = $el.clientHeight + "px";
+                }
+                */
+
+
+            }
+
+            focus() {
+                console.log('Focus ???');
+                this.$.content.focus();
+            }
+        }
+
+        customElements.define(JupilerTextArea.is, JupilerTextArea);
+    </script>
+</dom-module>
